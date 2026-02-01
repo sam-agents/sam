@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const readline = require('readline');
 
 const CYAN = '\x1b[36m';
 const GREEN = '\x1b[32m';
@@ -9,6 +10,7 @@ const YELLOW = '\x1b[33m';
 const RED = '\x1b[31m';
 const RESET = '\x1b[0m';
 const BOLD = '\x1b[1m';
+const DIM = '\x1b[2m';
 
 const PLATFORMS = ['claude', 'cursor', 'all'];
 
@@ -56,11 +58,11 @@ function showHelp() {
   log('  Autonomous TDD Agent System\n', CYAN);
   log('  Usage: npx @sam-agents/sam [options] [target-directory]\n');
   log('  Options:');
-  log('    --platform <name>  Target platform: claude (default), cursor, all');
+  log('    --platform <name>  Target platform: claude, cursor, all');
   log('    --help, -h         Show this help message');
   log('    --version, -v      Show version number\n');
   log('  Examples:');
-  log('    npx @sam-agents/sam                    Install for Claude Code');
+  log('    npx @sam-agents/sam                    Interactive mode');
   log('    npx @sam-agents/sam --platform cursor  Install for Cursor');
   log('    npx @sam-agents/sam --platform all     Install for all platforms');
   log('    npx @sam-agents/sam ./myapp            Install in ./myapp directory\n');
@@ -76,7 +78,6 @@ function generateCursorRules(samDir, targetDir) {
     fs.mkdirSync(cursorDir, { recursive: true });
   }
 
-  // Read agent definitions and generate Cursor rules
   const agents = [
     { name: 'sam', file: 'core/agents/sam-master.md', display: 'SAM Orchestrator' },
     { name: 'atlas', file: 'agents/architect.md', display: 'Atlas - System Architect' },
@@ -94,7 +95,6 @@ function generateCursorRules(samDir, targetDir) {
     if (fs.existsSync(agentPath)) {
       const content = fs.readFileSync(agentPath, 'utf8');
 
-      // Create Cursor rule file
       const ruleContent = `---
 description: ${agent.display} - SAM Agent for TDD development
 globs: ["**/*"]
@@ -116,7 +116,6 @@ To use this agent, the user should mention @${agent.name} in their message.
     }
   }
 
-  // Create main SAM workflow rule
   const workflowRule = `---
 description: SAM Autonomous TDD Workflow - Full pipeline from PRD to tested code
 globs: ["**/*"]
@@ -168,38 +167,43 @@ Mention @sam-tdd with a PRD or feature description to start the pipeline.
   return rulesCount;
 }
 
-function main() {
-  const args = process.argv.slice(2);
+async function promptPlatform() {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
 
-  // Handle flags
-  if (args.includes('--help') || args.includes('-h')) {
-    showHelp();
-    return;
-  }
+  return new Promise((resolve) => {
+    log('\n' + BOLD + '  SAM - Smart Agent Manager' + RESET);
+    log('  Autonomous TDD Agent System\n', CYAN);
+    log('  Select your IDE/Platform:\n');
+    log('    1) Claude Code  ' + DIM + '(.claude/commands/)' + RESET);
+    log('    2) Cursor       ' + DIM + '(.cursor/rules/)' + RESET);
+    log('    3) Both         ' + DIM + '(install for all platforms)' + RESET);
+    log('');
 
-  if (args.includes('--version') || args.includes('-v')) {
-    const pkg = require('../package.json');
-    log(`@sam-agents/sam v${pkg.version}`);
-    return;
-  }
+    rl.question('  Enter choice [1-3]: ', (answer) => {
+      rl.close();
+      const choice = answer.trim();
 
-  // Parse platform
-  let platform = 'claude';
-  const platformIdx = args.indexOf('--platform');
-  if (platformIdx !== -1 && args[platformIdx + 1]) {
-    platform = args[platformIdx + 1].toLowerCase();
-    if (!PLATFORMS.includes(platform)) {
-      log(`\nError: Unknown platform "${platform}". Use: ${PLATFORMS.join(', ')}`, RED);
-      process.exit(1);
-    }
-  }
+      if (choice === '1' || choice.toLowerCase() === 'claude') {
+        resolve('claude');
+      } else if (choice === '2' || choice.toLowerCase() === 'cursor') {
+        resolve('cursor');
+      } else if (choice === '3' || choice.toLowerCase() === 'both' || choice.toLowerCase() === 'all') {
+        resolve('all');
+      } else if (choice === '') {
+        // Default to claude
+        resolve('claude');
+      } else {
+        log('\n  Invalid choice. Defaulting to Claude Code.\n', YELLOW);
+        resolve('claude');
+      }
+    });
+  });
+}
 
-  // Get target directory (skip flags)
-  const targetDir = args.find(arg => !arg.startsWith('--') && arg !== platform) || process.cwd();
-
-  log('\n' + BOLD + '  SAM - Smart Agent Manager' + RESET);
-  log('  Autonomous TDD Agent System\n', CYAN);
-
+function install(platform, targetDir) {
   const templatesDir = path.join(__dirname, '..', 'templates');
 
   if (!fs.existsSync(templatesDir)) {
@@ -209,10 +213,10 @@ function main() {
 
   const samDir = path.join(targetDir, '_sam');
 
-  log(`  Platform: ${platform}`, CYAN);
+  log(`\n  Platform: ${platform}`, CYAN);
   log(`  Installing to: ${targetDir}\n`, CYAN);
 
-  // Always copy _sam folder (core agent definitions)
+  // Always copy _sam folder
   const samTemplateDir = path.join(templatesDir, '_sam');
   if (fs.existsSync(samTemplateDir)) {
     copyRecursive(samTemplateDir, samDir);
@@ -270,6 +274,47 @@ function main() {
     log('  Cursor will auto-detect rules in .cursor/rules/', YELLOW);
   }
   log('');
+}
+
+async function main() {
+  const args = process.argv.slice(2);
+
+  // Handle flags
+  if (args.includes('--help') || args.includes('-h')) {
+    showHelp();
+    return;
+  }
+
+  if (args.includes('--version') || args.includes('-v')) {
+    const pkg = require('../package.json');
+    log(`@sam-agents/sam v${pkg.version}`);
+    return;
+  }
+
+  // Check if platform is specified
+  const platformIdx = args.indexOf('--platform');
+  let platform = null;
+
+  if (platformIdx !== -1 && args[platformIdx + 1]) {
+    platform = args[platformIdx + 1].toLowerCase();
+    if (!PLATFORMS.includes(platform)) {
+      log(`\nError: Unknown platform "${platform}". Use: ${PLATFORMS.join(', ')}`, RED);
+      process.exit(1);
+    }
+  }
+
+  // Get target directory (skip flags)
+  const targetDir = args.find(arg => !arg.startsWith('--') && arg !== platform) || process.cwd();
+
+  // If no platform specified, prompt interactively
+  if (!platform) {
+    platform = await promptPlatform();
+  } else {
+    log('\n' + BOLD + '  SAM - Smart Agent Manager' + RESET);
+    log('  Autonomous TDD Agent System', CYAN);
+  }
+
+  install(platform, targetDir);
 }
 
 main();
