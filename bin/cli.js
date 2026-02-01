@@ -10,6 +10,8 @@ const RED = '\x1b[31m';
 const RESET = '\x1b[0m';
 const BOLD = '\x1b[1m';
 
+const PLATFORMS = ['claude', 'cursor', 'all'];
+
 function log(message, color = RESET) {
   console.log(`${color}${message}${RESET}`);
 }
@@ -51,14 +53,119 @@ function countFiles(dir) {
 
 function showHelp() {
   log('\n' + BOLD + '  SAM - Smart Agent Manager' + RESET);
-  log('  Autonomous TDD Agent System for Claude Code\n', CYAN);
-  log('  Usage: npx @sam-agents/sam [target-directory]\n');
+  log('  Autonomous TDD Agent System\n', CYAN);
+  log('  Usage: npx @sam-agents/sam [options] [target-directory]\n');
   log('  Options:');
-  log('    --help, -h     Show this help message');
-  log('    --version, -v  Show version number\n');
+  log('    --platform <name>  Target platform: claude (default), cursor, all');
+  log('    --help, -h         Show this help message');
+  log('    --version, -v      Show version number\n');
   log('  Examples:');
-  log('    npx @sam-agents/sam          Install in current directory');
-  log('    npx @sam-agents/sam ./myapp  Install in ./myapp directory\n');
+  log('    npx @sam-agents/sam                    Install for Claude Code');
+  log('    npx @sam-agents/sam --platform cursor  Install for Cursor');
+  log('    npx @sam-agents/sam --platform all     Install for all platforms');
+  log('    npx @sam-agents/sam ./myapp            Install in ./myapp directory\n');
+  log('  Supported Platforms:');
+  log('    claude  - Claude Code CLI (.claude/commands/)');
+  log('    cursor  - Cursor IDE (.cursor/rules/)\n');
+}
+
+function generateCursorRules(samDir, targetDir) {
+  const cursorDir = path.join(targetDir, '.cursor', 'rules');
+
+  if (!fs.existsSync(cursorDir)) {
+    fs.mkdirSync(cursorDir, { recursive: true });
+  }
+
+  // Read agent definitions and generate Cursor rules
+  const agents = [
+    { name: 'sam', file: 'core/agents/sam-master.md', display: 'SAM Orchestrator' },
+    { name: 'atlas', file: 'agents/architect.md', display: 'Atlas - System Architect' },
+    { name: 'dyna', file: 'agents/dev.md', display: 'Dyna - Developer' },
+    { name: 'titan', file: 'agents/test.md', display: 'Titan - Test Architect' },
+    { name: 'argus', file: 'agents/reviewer.md', display: 'Argus - Code Reviewer' },
+    { name: 'sage', file: 'agents/tech-writer.md', display: 'Sage - Technical Writer' },
+    { name: 'iris', file: 'agents/ux-designer.md', display: 'Iris - UX Designer' }
+  ];
+
+  let rulesCount = 0;
+
+  for (const agent of agents) {
+    const agentPath = path.join(samDir, agent.file);
+    if (fs.existsSync(agentPath)) {
+      const content = fs.readFileSync(agentPath, 'utf8');
+
+      // Create Cursor rule file
+      const ruleContent = `---
+description: ${agent.display} - SAM Agent for TDD development
+globs: ["**/*"]
+alwaysApply: false
+---
+
+# ${agent.display}
+
+When the user mentions "@${agent.name}" or asks for ${agent.display.toLowerCase()}, adopt this persona:
+
+${content}
+
+## Invocation
+To use this agent, the user should mention @${agent.name} in their message.
+`;
+
+      fs.writeFileSync(path.join(cursorDir, `sam-${agent.name}.mdc`), ruleContent);
+      rulesCount++;
+    }
+  }
+
+  // Create main SAM workflow rule
+  const workflowRule = `---
+description: SAM Autonomous TDD Workflow - Full pipeline from PRD to tested code
+globs: ["**/*"]
+alwaysApply: false
+---
+
+# SAM Autonomous TDD Workflow
+
+When the user mentions "@sam-tdd" or asks for the TDD workflow, execute this pipeline:
+
+## Overview
+SAM orchestrates a team of AI agents to transform a PRD into working, tested code using strict TDD.
+
+## The Pipeline
+
+### Phase 1: Validate PRD
+- @atlas reviews technical feasibility
+- @iris validates UX requirements
+
+### Phase 2: Generate Stories
+- Break PRD into epics and user stories
+- Create detailed acceptance criteria
+
+### Phase 3: TDD Loop (for each story)
+1. **RED**: @titan writes failing tests based on acceptance criteria
+2. **GREEN**: @dyna writes minimal code to make tests pass
+3. **REFACTOR**: @argus reviews and improves code quality
+
+### Phase 4: Complete
+- @sage generates documentation
+- Final review and handoff
+
+## Usage
+Mention @sam-tdd with a PRD or feature description to start the pipeline.
+
+## Agent Commands
+- @sam - Orchestrator
+- @atlas - Architect (PRD validation, technical design)
+- @titan - Test Architect (RED phase - write failing tests)
+- @dyna - Developer (GREEN phase - make tests pass)
+- @argus - Code Reviewer (REFACTOR phase)
+- @sage - Technical Writer (documentation)
+- @iris - UX Designer (UX validation)
+`;
+
+  fs.writeFileSync(path.join(cursorDir, 'sam-workflow.mdc'), workflowRule);
+  rulesCount++;
+
+  return rulesCount;
 }
 
 function main() {
@@ -72,14 +179,26 @@ function main() {
 
   if (args.includes('--version') || args.includes('-v')) {
     const pkg = require('../package.json');
-    log(`sam-skills v${pkg.version}`);
+    log(`@sam-agents/sam v${pkg.version}`);
     return;
   }
 
-  const targetDir = args[0] || process.cwd();
+  // Parse platform
+  let platform = 'claude';
+  const platformIdx = args.indexOf('--platform');
+  if (platformIdx !== -1 && args[platformIdx + 1]) {
+    platform = args[platformIdx + 1].toLowerCase();
+    if (!PLATFORMS.includes(platform)) {
+      log(`\nError: Unknown platform "${platform}". Use: ${PLATFORMS.join(', ')}`, RED);
+      process.exit(1);
+    }
+  }
+
+  // Get target directory (skip flags)
+  const targetDir = args.find(arg => !arg.startsWith('--') && arg !== platform) || process.cwd();
 
   log('\n' + BOLD + '  SAM - Smart Agent Manager' + RESET);
-  log('  Autonomous TDD Agent System for Claude Code\n', CYAN);
+  log('  Autonomous TDD Agent System\n', CYAN);
 
   const templatesDir = path.join(__dirname, '..', 'templates');
 
@@ -88,18 +207,12 @@ function main() {
     process.exit(1);
   }
 
-  // Check for existing installations
   const samDir = path.join(targetDir, '_sam');
-  const claudeCommandsDir = path.join(targetDir, '.claude', 'commands', 'sam');
 
-  if (fs.existsSync(samDir) || fs.existsSync(claudeCommandsDir)) {
-    log('  Warning: SAM files already exist in this directory.', YELLOW);
-    log('  Existing files will be overwritten.\n', YELLOW);
-  }
+  log(`  Platform: ${platform}`, CYAN);
+  log(`  Installing to: ${targetDir}\n`, CYAN);
 
-  log('  Installing SAM to: ' + targetDir + '\n', CYAN);
-
-  // Copy _sam folder
+  // Always copy _sam folder (core agent definitions)
   const samTemplateDir = path.join(templatesDir, '_sam');
   if (fs.existsSync(samTemplateDir)) {
     copyRecursive(samTemplateDir, samDir);
@@ -107,26 +220,56 @@ function main() {
     log(`  ✓ Copied _sam/ (${samFileCount} files)`, GREEN);
   }
 
-  // Copy .claude/commands/sam folder
-  const claudeTemplateDir = path.join(templatesDir, '.claude', 'commands', 'sam');
-  if (fs.existsSync(claudeTemplateDir)) {
-    copyRecursive(claudeTemplateDir, claudeCommandsDir);
-    const claudeFileCount = countFiles(claudeCommandsDir);
-    log(`  ✓ Copied .claude/commands/sam/ (${claudeFileCount} files)`, GREEN);
+  // Install Claude Code integration
+  if (platform === 'claude' || platform === 'all') {
+    const claudeCommandsDir = path.join(targetDir, '.claude', 'commands', 'sam');
+    const claudeTemplateDir = path.join(templatesDir, '.claude', 'commands', 'sam');
+    if (fs.existsSync(claudeTemplateDir)) {
+      copyRecursive(claudeTemplateDir, claudeCommandsDir);
+      const claudeFileCount = countFiles(claudeCommandsDir);
+      log(`  ✓ Copied .claude/commands/sam/ (${claudeFileCount} files)`, GREEN);
+    }
+  }
+
+  // Install Cursor integration
+  if (platform === 'cursor' || platform === 'all') {
+    const cursorRulesCount = generateCursorRules(samDir, targetDir);
+    log(`  ✓ Generated .cursor/rules/ (${cursorRulesCount} files)`, GREEN);
   }
 
   log('\n' + BOLD + '  Installation complete!' + RESET + '\n');
-  log('  SAM Agents available:', CYAN);
-  log('    /sam:core:agents:sam          - SAM Orchestrator');
-  log('    /sam:sam:agents:atlas         - Atlas (Architect)');
-  log('    /sam:sam:agents:dyna          - Dyna (Developer)');
-  log('    /sam:sam:agents:titan         - Titan (Test Architect)');
-  log('    /sam:sam:agents:argus         - Argus (Code Reviewer)');
-  log('    /sam:sam:agents:sage          - Sage (Tech Writer)');
-  log('    /sam:sam:agents:iris          - Iris (UX Designer)');
-  log('\n  Workflow:');
-  log('    /sam:core:workflows:autonomous-tdd - Full TDD Pipeline\n');
-  log('  Restart Claude Code to load the new skills.\n', YELLOW);
+
+  if (platform === 'claude' || platform === 'all') {
+    log('  Claude Code Commands:', CYAN);
+    log('    /sam:core:agents:sam          - SAM Orchestrator');
+    log('    /sam:sam:agents:atlas         - Atlas (Architect)');
+    log('    /sam:sam:agents:dyna          - Dyna (Developer)');
+    log('    /sam:sam:agents:titan         - Titan (Test Architect)');
+    log('    /sam:sam:agents:argus         - Argus (Code Reviewer)');
+    log('    /sam:sam:agents:sage          - Sage (Tech Writer)');
+    log('    /sam:sam:agents:iris          - Iris (UX Designer)');
+    log('    /sam:core:workflows:autonomous-tdd - Full TDD Pipeline\n');
+  }
+
+  if (platform === 'cursor' || platform === 'all') {
+    log('  Cursor Commands (use @ mentions):', CYAN);
+    log('    @sam       - SAM Orchestrator');
+    log('    @atlas     - Atlas (Architect)');
+    log('    @dyna      - Dyna (Developer)');
+    log('    @titan     - Titan (Test Architect)');
+    log('    @argus     - Argus (Code Reviewer)');
+    log('    @sage      - Sage (Tech Writer)');
+    log('    @iris      - Iris (UX Designer)');
+    log('    @sam-tdd   - Full TDD Pipeline\n');
+  }
+
+  if (platform === 'claude' || platform === 'all') {
+    log('  Restart Claude Code to load the new skills.', YELLOW);
+  }
+  if (platform === 'cursor' || platform === 'all') {
+    log('  Cursor will auto-detect rules in .cursor/rules/', YELLOW);
+  }
+  log('');
 }
 
 main();
