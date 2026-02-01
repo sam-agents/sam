@@ -56,16 +56,16 @@ function countFiles(dir) {
 function showHelp() {
   log('\n' + BOLD + '  SAM - Smart Agent Manager' + RESET);
   log('  Autonomous TDD Agent System\n', CYAN);
-  log('  Usage: npx @sam-agents/sam [options] [target-directory]\n');
+  log('  Usage: npx sam-agents [options] [target-directory]\n');
   log('  Options:');
   log('    --platform <name>  Target platform: claude, cursor, all');
   log('    --help, -h         Show this help message');
   log('    --version, -v      Show version number\n');
   log('  Examples:');
-  log('    npx @sam-agents/sam                    Interactive mode');
-  log('    npx @sam-agents/sam --platform cursor  Install for Cursor');
-  log('    npx @sam-agents/sam --platform all     Install for all platforms');
-  log('    npx @sam-agents/sam ./myapp            Install in ./myapp directory\n');
+  log('    npx sam-agents                    Interactive mode');
+  log('    npx sam-agents --platform cursor  Install for Cursor');
+  log('    npx sam-agents --platform all     Install for all platforms');
+  log('    npx sam-agents ./myapp            Install in ./myapp directory\n');
   log('  Supported Platforms:');
   log('    claude  - Claude Code CLI (.claude/commands/)');
   log('    cursor  - Cursor IDE (.cursor/rules/)\n');
@@ -287,7 +287,7 @@ async function main() {
 
   if (args.includes('--version') || args.includes('-v')) {
     const pkg = require('../package.json');
-    log(`@sam-agents/sam v${pkg.version}`);
+    log(`sam-agents v${pkg.version}`);
     return;
   }
 

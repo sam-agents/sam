@@ -1,8 +1,8 @@
 # SAM - Smart Agent Manager
 
-[![npm version](https://img.shields.io/npm/v/@sam-agents/sam.svg)](https://www.npmjs.com/package/@sam-agents/sam)
+[![npm version](https://img.shields.io/npm/v/sam-agents.svg)](https://www.npmjs.com/package/sam-agents)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Downloads](https://img.shields.io/npm/dm/@sam-agents/sam.svg)](https://www.npmjs.com/package/@sam-agents/sam)
+[![Downloads](https://img.shields.io/npm/dm/sam-agents.svg)](https://www.npmjs.com/package/sam-agents)
 
 **Autonomous TDD agent system for Claude Code and Cursor.**
 
@@ -12,21 +12,21 @@ SAM orchestrates a team of specialized AI agents that transform your PRD into wo
 
 ```bash
 # For Claude Code (default)
-npx @sam-agents/sam
+npx sam-agents
 
 # For Cursor
-npx @sam-agents/sam --platform cursor
+npx sam-agents --platform cursor
 
 # For all platforms
-npx @sam-agents/sam --platform all
+npx sam-agents --platform all
 ```
 
 ## Supported Platforms
 
 | Platform | Install Command | Skill Format |
 |----------|-----------------|--------------|
-| **Claude Code** | `npx @sam-agents/sam` | `/sam:` commands |
-| **Cursor** | `npx @sam-agents/sam --platform cursor` | `@agent` mentions |
+| **Claude Code** | `npx sam-agents` | `/sam:` commands |
+| **Cursor** | `npx sam-agents --platform cursor` | `@agent` mentions |
 
 ## Why SAM?
 
