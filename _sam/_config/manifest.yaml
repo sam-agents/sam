@@ -1,0 +1,13 @@
+# SAM - Smart Agent Manager
+# Skill Package Manifest for Claude Code
+# Version: 1.0.0
+
+installation:
+  version: 1.0.0
+  installDate: 2026-01-28T00:00:00.000Z
+  lastUpdated: 2026-01-28T00:00:00.000Z
+modules:
+  - core
+  - sam
+ides:
+  - claude-code

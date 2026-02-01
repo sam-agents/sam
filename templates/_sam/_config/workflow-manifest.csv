@@ -1,0 +1,2 @@
+name,description,module,path
+"autonomous-tdd","SAM Autonomous TDD Pipeline - Transforms PRD into working, tested code using RED-GREEN-REFACTOR methodology","core","_sam/core/workflows/autonomous-tdd/workflow.md"

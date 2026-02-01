@@ -1,0 +1,108 @@
+# SAM Autonomous TDD Pipeline Status
+# This file tracks the state of a pipeline run
+
+# Run Identification
+run_id: "<timestamp>"
+prd_path: "<path-to-prd>"
+started_at: "<timestamp>"
+completed_at: null
+
+# Current State
+current_phase: "initialization"  # initialization|validation|planning|implementation|completion
+current_story: null
+
+# Configuration (copied from config.yaml at run start)
+config:
+  max_retry_attempts: 3
+  tdd_enforced: true
+  coverage_threshold: 80
+
+# Phase 1: Validation
+validation:
+  status: "pending"  # pending|passed|failed
+  started_at: null
+  completed_at: null
+  architect_approval: null
+  ux_approval: null
+  issues: []
+  # Example issue:
+  # - type: "warning"
+  #   agent: "architect"
+  #   description: "Consider caching for dashboard queries"
+
+# Phase 2: Planning
+planning:
+  status: "pending"  # pending|completed
+  started_at: null
+  completed_at: null
+  epics_created: 0
+  stories_created: 0
+
+# Phase 3: Implementation
+implementation:
+  status: "pending"  # pending|in_progress|completed
+  started_at: null
+  completed_at: null
+  current_story_index: 0
+
+# Stories (populated in Phase 2)
+stories: []
+# Example story entry:
+# - id: "epic-1-story-1"
+#   title: "User can log in with email and password"
+#   epic: "epic-1"
+#   file_path: "stories/epic-1-story-1.md"
+#   priority: 1
+#   dependencies: []
+#   status: "pending"  # pending|red|green|refactor|done|blocked
+#
+#   red_phase:
+#     status: "pending"  # pending|in_progress|completed
+#     started_at: null
+#     completed_at: null
+#     tests_written: 0
+#     tests_failing: 0
+#
+#   green_phase:
+#     status: "pending"
+#     started_at: null
+#     completed_at: null
+#     retry_count: 0
+#     tests_passing: 0
+#
+#   refactor_phase:
+#     status: "pending"
+#     started_at: null
+#     completed_at: null
+#     issues_found: 0
+#     issues_fixed: 0
+#     issues_remaining: 0
+#
+#   blocked_info: null
+#   # If blocked:
+#   # blocked_info:
+#   #   phase: "green"
+#   #   reason: "Could not resolve external dependency"
+#   #   attempts: 3
+#   #   last_error: "Error message..."
+
+# Phase 4: Completion
+completion:
+  status: "pending"  # pending|completed
+  started_at: null
+  completed_at: null
+  documentation_generated: false
+  report_generated: false
+  outputs:
+    documentation: []
+    report: null
+
+# Summary (populated at completion)
+summary:
+  total_stories: 0
+  stories_completed: 0
+  stories_blocked: 0
+  total_tests: 0
+  tests_passing: 0
+  total_issues_found: 0
+  total_issues_fixed: 0

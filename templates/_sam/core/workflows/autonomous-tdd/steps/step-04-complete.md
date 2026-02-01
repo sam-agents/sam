@@ -1,0 +1,356 @@
+---
+step: 4
+name: complete
+description: Finalize implementation, generate documentation, and produce summary report
+agents: [tech-writer]
+---
+
+# Step 4: Completion
+
+**Purpose:** Finalize the pipeline run by generating documentation, producing a summary report, and cleaning up.
+
+---
+
+## ENTRY CONDITIONS
+
+- Phase 3 TDD loop complete
+- All stories either 'done' or 'blocked'
+- Pipeline status up to date
+
+---
+
+## PROCESS
+
+### 4.1 Gather Results
+
+```yaml
+results_gathering:
+  stories_completed:
+    count: N
+    list: [story-ids...]
+
+  stories_blocked:
+    count: M
+    list: [story-ids...]
+    reasons: [...]
+
+  tests_written:
+    acceptance_tests: X
+    unit_tests: Y
+    total: X + Y
+
+  code_changes:
+    files_created: [...]
+    files_modified: [...]
+    lines_added: N
+    lines_removed: M
+```
+
+### 4.2 Generate Documentation (Tech Writer)
+
+**Agent:** Paige (Technical Writer)
+
+**Invoke only if stories completed > 0**
+
+**Input:**
+- Completed story files
+- Implemented code
+- Test files
+
+**Process:**
+
+```yaml
+documentation:
+  generate:
+    - feature_docs:
+        for_each: completed_story
+        template: "feature-documentation.md"
+        output_dir: "sdocs/docs/"
+
+    - api_reference:
+        if: "API endpoints implemented"
+        template: "api-reference.md"
+
+    - readme_updates:
+        action: "Update README with new features"
+        sections: ["Features", "Usage", "API"]
+
+    - changelog:
+        action: "Add changelog entry"
+        format: "Keep a Changelog"
+```
+
+**Documentation Output:**
+
+```markdown
+# Feature: User Authentication
+
+## Overview
+This feature enables users to log in, log out, and reset their passwords.
+
+## Implemented Stories
+- ✅ User can log in with email and password
+- ✅ User can log out
+- ✅ User can reset password
+- ❌ User can enable 2FA (blocked)
+
+## Usage
+
+### Login
+\`\`\`typescript
+import { login } from './auth';
+
+const result = await login({
+  email: 'user@example.com',
+  password: 'securepassword'
+});
+
+if (result.success) {
+  console.log('Token:', result.token);
+}
+\`\`\`
+
+### Logout
+\`\`\`typescript
+import { logout } from './auth';
+
+await logout();
+\`\`\`
+
+## API Reference
+
+### POST /api/auth/login
+- **Body:** `{ email: string, password: string }`
+- **Response:** `{ success: boolean, token?: string, error?: string }`
+
+### POST /api/auth/logout
+- **Headers:** `Authorization: Bearer <token>`
+- **Response:** `{ success: boolean }`
+```
+
+### 4.3 Generate Pipeline Report
+
+**Create comprehensive execution report:**
+
+```markdown
+# SAM Autonomous TDD Pipeline Report
+
+## Run Summary
+
+| Metric | Value |
+|--------|-------|
+| Run ID | 2024-01-15T10:30:00Z |
+| PRD | path/to/prd.md |
+| Started | 2024-01-15 10:30:00 |
+| Completed | 2024-01-15 14:45:00 |
+| Duration | 4h 15m |
+
+## Results
+
+### Stories
+| Status | Count | Percentage |
+|--------|-------|------------|
+| ✅ Completed | 7 | 87.5% |
+| ❌ Blocked | 1 | 12.5% |
+| **Total** | 8 | 100% |
+
+### Completed Stories
+| ID | Title | Tests |
+|----|-------|-------|
+| epic-1-story-1 | User can log in | 12 |
+| epic-1-story-2 | User can log out | 6 |
+| epic-1-story-3 | User can reset password | 8 |
+| epic-2-story-1 | View dashboard | 10 |
+| epic-2-story-2 | Dashboard widgets | 15 |
+| epic-3-story-1 | User settings page | 9 |
+| epic-3-story-2 | Change password | 7 |
+
+### Blocked Stories
+| ID | Title | Phase | Reason |
+|----|-------|-------|--------|
+| epic-1-story-4 | Enable 2FA | GREEN | External service integration failed |
+
+**Recommendation for blocked stories:** Manual intervention required for 2FA integration. Consider adding mock service for testing.
+
+## Test Summary
+
+| Category | Count | Passing |
+|----------|-------|---------|
+| Acceptance Tests | 45 | 45 ✅ |
+| Unit Tests | 78 | 78 ✅ |
+| **Total** | 123 | 123 ✅ |
+
+## Code Changes
+
+| Metric | Count |
+|--------|-------|
+| Files Created | 23 |
+| Files Modified | 8 |
+| Lines Added | 1,847 |
+| Lines Removed | 42 |
+
+## Phase Breakdown
+
+### Phase 1: Validation
+- Status: ✅ Passed
+- Duration: 5 minutes
+- Architect: Approved
+- UX: Approved
+
+### Phase 2: Planning
+- Status: ✅ Completed
+- Duration: 10 minutes
+- Epics Created: 3
+- Stories Created: 8
+
+### Phase 3: Implementation
+- Status: ✅ Completed (with 1 blocked)
+- Duration: 3h 45m
+- TDD Cycles: 8
+- Total Retries: 3
+
+### Phase 4: Completion
+- Status: ✅ Completed
+- Duration: 15 minutes
+- Documentation: Generated
+- Report: This document
+
+## Recommendations
+
+1. **2FA Integration:** Requires manual setup of external service or mock
+2. **Test Coverage:** Consider adding integration tests for auth flow
+3. **Performance:** Dashboard query could benefit from caching
+
+## Files Generated
+
+### Documentation
+- `sdocs/docs/user-authentication.md`
+- `sdocs/docs/dashboard.md`
+- `sdocs/docs/api-reference.md`
+
+### Reports
+- `sdocs/autonomous-runs/<run-id>/pipeline-report.md` (this file)
+- `sdocs/autonomous-runs/<run-id>/pipeline-status.yaml`
+
+---
+
+*Generated by SAM (Smart Agent Manager) v1.0.0*
+*Run completed: 2024-01-15 14:45:00*
+```
+
+### 4.4 Update Final State
+
+```yaml
+# Final pipeline-status.yaml update
+
+completion:
+  status: "completed"  # or "partial" if blocked stories
+  completed_at: "<timestamp>"
+
+  summary:
+    stories_completed: 7
+    stories_blocked: 1
+    tests_passing: 123
+    documentation_generated: true
+    report_generated: true
+
+  outputs:
+    documentation:
+      - "sdocs/docs/user-authentication.md"
+      - "sdocs/docs/dashboard.md"
+    report: "pipeline-report.md"
+
+current_phase: "completed"
+```
+
+---
+
+## OUTPUT FILES
+
+```
+sdocs/autonomous-runs/<run-id>/
+├── pipeline-status.yaml      # Final state
+├── pipeline-report.md        # Summary report
+├── stories/
+│   ├── epic-1-story-1.md    # Story files (updated)
+│   └── ...
+├── logs/
+│   └── execution.log        # Full execution log
+└── docs/                    # Generated documentation
+    ├── user-authentication.md
+    └── api-reference.md
+```
+
+---
+
+## EXIT STATES
+
+### Complete Success
+```yaml
+exit_state: "success"
+message: "All stories implemented and tested successfully"
+action: "Pipeline complete - review documentation and report"
+```
+
+### Partial Success
+```yaml
+exit_state: "partial"
+message: "7/8 stories completed, 1 blocked"
+action: "Review blocked stories for manual intervention"
+blocked_stories:
+  - id: "epic-1-story-4"
+    reason: "External service integration failed"
+```
+
+### Failure
+```yaml
+exit_state: "failure"
+message: "All stories blocked - pipeline could not complete"
+action: "Review failure report, revise PRD or address blockers"
+```
+
+---
+
+## FINAL OUTPUT TO USER
+
+```
+╔═══════════════════════════════════════════════════════════════╗
+║           SAM AUTONOMOUS TDD PIPELINE COMPLETE                ║
+╠═══════════════════════════════════════════════════════════════╣
+║                                                               ║
+║  Status:     ✅ COMPLETED (with 1 blocked story)              ║
+║  Duration:   4h 15m                                           ║
+║                                                               ║
+║  Stories:    7/8 completed (87.5%)                           ║
+║  Tests:      123 passing                                      ║
+║  Coverage:   Acceptance + Unit tests                         ║
+║                                                               ║
+║  📄 Report:  sdocs/autonomous-runs/<run-id>/pipeline-report.md║
+║  📚 Docs:    sdocs/docs/                                      ║
+║                                                               ║
+║  ⚠️  Blocked: epic-1-story-4 (2FA) - manual intervention     ║
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+```
+
+---
+
+## AUTONOMOUS BEHAVIOR
+
+In autonomous mode:
+- Generate all documentation without prompts
+- Produce comprehensive report automatically
+- Exit cleanly with status summary
+- No human intervention required
+
+---
+
+## PIPELINE COMPLETE
+
+The SAM Autonomous TDD Pipeline has finished execution.
+
+**Next steps for user:**
+1. Review pipeline-report.md for summary
+2. Check generated documentation
+3. Address any blocked stories manually
+4. Commit implemented features to version control

@@ -1,0 +1,31 @@
+# SAM - Smart Agent Manager
+# Core Configuration
+# Version: 1.0.0
+
+# User Settings
+user_name: Santosh
+communication_language: English
+document_output_language: English
+
+# Output Configuration
+output_folder: "{project-root}/sdocs"
+
+# Pipeline Settings
+autonomous_mode: true
+max_retry_attempts: 3
+tdd_enforced: true
+
+# Agent Manifest Location
+agent_manifest_path: "{project-root}/_sam/_config/agent-manifest.csv"
+
+# Workflow Settings
+default_workflow: autonomous-tdd
+standalone_mode: false  # Allows chaining without human prompts
+
+# Gate Configurations
+gates:
+  prd_validation: true
+  tests_must_fail_before_impl: true
+  tests_must_pass_after_impl: true
+  code_review_required: true
+  coverage_threshold: 80

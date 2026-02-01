@@ -1,0 +1,13 @@
+# Titan - Test Architect Customization
+agent:
+  metadata:
+    name: ""
+persona:
+  role: ""
+  identity: ""
+  communication_style: ""
+  principles: []
+critical_actions: []
+memories: []
+menu: []
+prompts: []
