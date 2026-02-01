@@ -1,9 +1,9 @@
 {
-  "name": "sam-skills",
-  "version": "0.2.0",
+  "name": "@sam-agents/sam",
+  "version": "0.1.0",
   "description": "SAM (Smart Agent Manager) - Autonomous TDD agent system for Claude Code",
   "bin": {
-    "sam-skills": "./bin/cli.js"
+    "sam": "./bin/cli.js"
   },
   "files": [
     "bin",

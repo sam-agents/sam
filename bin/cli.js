@@ -52,13 +52,13 @@ function countFiles(dir) {
 function showHelp() {
   log('\n' + BOLD + '  SAM - Smart Agent Manager' + RESET);
   log('  Autonomous TDD Agent System for Claude Code\n', CYAN);
-  log('  Usage: npx sam-skills [target-directory]\n');
+  log('  Usage: npx @sam-agents/sam [target-directory]\n');
   log('  Options:');
   log('    --help, -h     Show this help message');
   log('    --version, -v  Show version number\n');
   log('  Examples:');
-  log('    npx sam-skills          Install in current directory');
-  log('    npx sam-skills ./myapp  Install in ./myapp directory\n');
+  log('    npx @sam-agents/sam          Install in current directory');
+  log('    npx @sam-agents/sam ./myapp  Install in ./myapp directory\n');
 }
 
 function main() {

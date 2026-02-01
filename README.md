@@ -1,8 +1,8 @@
 # SAM - Smart Agent Manager
 
-[![npm version](https://img.shields.io/npm/v/sam-skills.svg)](https://www.npmjs.com/package/sam-skills)
+[![npm version](https://img.shields.io/npm/v/@sam-agents/sam.svg)](https://www.npmjs.com/package/@sam-agents/sam)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Downloads](https://img.shields.io/npm/dm/sam-skills.svg)](https://www.npmjs.com/package/sam-skills)
+[![Downloads](https://img.shields.io/npm/dm/@sam-agents/sam.svg)](https://www.npmjs.com/package/@sam-agents/sam)
 
 **Autonomous TDD agent system for Claude Code CLI.**
 
@@ -11,7 +11,7 @@ SAM orchestrates a team of specialized AI agents that transform your PRD into wo
 ## Quick Start
 
 ```bash
-npx sam-skills
+npx @sam-agents/sam
 ```
 
 This installs SAM agents into your current project. Restart Claude Code to load the skills.
