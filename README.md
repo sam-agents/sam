@@ -77,3 +77,5 @@ MIT - see [LICENSE](LICENSE) for details.
 ---
 
 Built with Claude Code. Powered by TDD.
+
+----
