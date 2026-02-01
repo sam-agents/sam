@@ -1,6 +1,6 @@
 {
   "name": "@sam-agents/sam",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "SAM (Smart Agent Manager) - Autonomous TDD agent system for Claude Code and Cursor",
   "bin": {
     "sam": "./bin/cli.js"
