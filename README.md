@@ -48,7 +48,7 @@ npx sam-agents --platform all          # All platforms
 | **Titan** | Test Architect (RED) | `/sam:sam:agents:titan` | `@titan` | `/sam-titan` |
 | **Dyna** | Developer (GREEN) | `/sam:sam:agents:dyna` | `@dyna` | `/sam-dyna` |
 | **Argus** | Code Reviewer (REFACTOR) | `/sam:sam:agents:argus` | `@argus` | `/sam-argus` |
-| **Vishy** | CSS Reviewer (web apps) | `/sam:sam:agents:vishy` | `@vishy` | `/sam-vishy` |
+| **Cosmo** | CSS Reviewer (web apps) | `/sam:sam:agents:cosmo` | `@cosmo` | `/sam-cosmo` |
 | **Sage** | Technical Writer | `/sam:sam:agents:sage` | `@sage` | `/sam-sage` |
 | **Iris** | UX Designer | `/sam:sam:agents:iris` | `@iris` | `/sam-iris` |
 
@@ -68,7 +68,7 @@ npx sam-agents --platform all          # All platforms
    - **RED**: Titan writes failing tests
    - **GREEN**: Dyna writes minimal code to pass
    - **REFACTOR**: Argus improves code quality
-   - **CSS**: Vishy reviews styling consistency (web apps only)
+   - **CSS**: Cosmo reviews styling consistency (web apps only)
 4. **Complete** - Sage generates documentation
 
 ## What Gets Installed
