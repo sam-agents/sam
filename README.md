@@ -4,29 +4,30 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Downloads](https://img.shields.io/npm/dm/sam-agents.svg)](https://www.npmjs.com/package/sam-agents)
 
-**Autonomous TDD agent system for Claude Code and Cursor.**
+**Autonomous TDD agent system for Claude Code, Cursor, and Antigravity.**
 
 SAM orchestrates a team of specialized AI agents that transform your PRD into working, tested code using strict Test-Driven Development (RED-GREEN-REFACTOR).
 
 ## Quick Start
 
 ```bash
-# For Claude Code (default)
+# Interactive mode (choose your platform)
 npx sam-agents
 
-# For Cursor
-npx sam-agents --platform cursor
-
-# For all platforms
-npx sam-agents --platform all
+# Or specify platform directly
+npx sam-agents --platform claude       # Claude Code
+npx sam-agents --platform cursor       # Cursor IDE
+npx sam-agents --platform antigravity  # Google Antigravity
+npx sam-agents --platform all          # All platforms
 ```
 
 ## Supported Platforms
 
 | Platform | Install Command | Skill Format |
 |----------|-----------------|--------------|
-| **Claude Code** | `npx sam-agents` | `/sam:` commands |
+| **Claude Code** | `npx sam-agents --platform claude` | `/sam:` commands |
 | **Cursor** | `npx sam-agents --platform cursor` | `@agent` mentions |
+| **Antigravity** | `npx sam-agents --platform antigravity` | `/sam-` skills |
 
 ## Why SAM?
 
@@ -36,24 +37,30 @@ npx sam-agents --platform all
 | **BYOA** | Use your own AI subscription | Pay per API call (5-10x cost) |
 | **Transparency** | Watch agents work in real-time | Black box |
 | **Autonomous** | Minimal intervention after PRD | Constant hand-holding |
-| **Multi-Platform** | Claude Code + Cursor | Single platform lock-in |
+| **Multi-Platform** | Claude Code + Cursor + Antigravity | Single platform lock-in |
 
 ## Available Agents
 
-| Agent | Claude Code | Cursor | Role |
-|-------|-------------|--------|------|
-| **SAM** | `/sam:core:agents:sam` | `@sam` | Orchestrator |
-| **Atlas** | `/sam:sam:agents:atlas` | `@atlas` | System Architect |
-| **Titan** | `/sam:sam:agents:titan` | `@titan` | Test Architect (RED) |
-| **Dyna** | `/sam:sam:agents:dyna` | `@dyna` | Developer (GREEN) |
-| **Argus** | `/sam:sam:agents:argus` | `@argus` | Code Reviewer (REFACTOR) |
-| **Sage** | `/sam:sam:agents:sage` | `@sage` | Technical Writer |
-| **Iris** | `/sam:sam:agents:iris` | `@iris` | UX Designer |
+| Agent | Role | Claude Code | Cursor | Antigravity |
+|-------|------|-------------|--------|-------------|
+| **SAM** | Orchestrator | `/sam:core:agents:sam` | `@sam` | `/sam-orchestrator` |
+| **Atlas** | System Architect | `/sam:sam:agents:atlas` | `@atlas` | `/sam-atlas` |
+| **Titan** | Test Architect (RED) | `/sam:sam:agents:titan` | `@titan` | `/sam-titan` |
+| **Dyna** | Developer (GREEN) | `/sam:sam:agents:dyna` | `@dyna` | `/sam-dyna` |
+| **Argus** | Code Reviewer (REFACTOR) | `/sam:sam:agents:argus` | `@argus` | `/sam-argus` |
+| **Vishy** | Visual QA (web apps) | `/sam:sam:agents:vishy` | `@vishy` | `/sam-vishy` |
+| **Sage** | Technical Writer | `/sam:sam:agents:sage` | `@sage` | `/sam-sage` |
+| **Iris** | UX Designer | `/sam:sam:agents:iris` | `@iris` | `/sam-iris` |
 
 ## The TDD Pipeline
 
-**Claude Code:** `/sam:core:workflows:autonomous-tdd`
-**Cursor:** `@sam-tdd`
+| Platform | Command |
+|----------|---------|
+| Claude Code | `/sam:core:workflows:autonomous-tdd` |
+| Cursor | `@sam-tdd` |
+| Antigravity | `/sam-tdd-pipeline` |
+
+### Pipeline Phases
 
 1. **Validate PRD** - Atlas + Iris review requirements
 2. **Generate Stories** - Break down into epics and user stories
@@ -61,6 +68,7 @@ npx sam-agents --platform all
    - **RED**: Titan writes failing tests
    - **GREEN**: Dyna writes minimal code to pass
    - **REFACTOR**: Argus improves code quality
+   - **VISUAL**: Vishy reviews UI alignment (web apps only)
 4. **Complete** - Sage generates documentation
 
 ## What Gets Installed
@@ -70,14 +78,18 @@ your-project/
 ├── _sam/                      # Agent definitions (shared)
 │   ├── agents/                # Individual agent configs
 │   └── core/workflows/        # TDD pipeline workflow
-├── .claude/commands/sam/      # Claude Code skills (--platform claude)
-└── .cursor/rules/             # Cursor rules (--platform cursor)
+├── .claude/commands/sam/      # Claude Code skills
+├── .cursor/rules/             # Cursor rules
+└── .agent/skills/             # Antigravity skills
 ```
 
 ## Requirements
 
 - Node.js 16+
-- [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) or [Cursor](https://cursor.com)
+- One of:
+  - [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code)
+  - [Cursor](https://cursor.com)
+  - [Google Antigravity](https://antigravity.google)
 
 ## Contributing
 
