@@ -87,7 +87,8 @@ function generateCursorRules(samDir, targetDir) {
     { name: 'titan', file: 'agents/test.md', display: 'Titan - Test Architect' },
     { name: 'argus', file: 'agents/reviewer.md', display: 'Argus - Code Reviewer' },
     { name: 'sage', file: 'agents/tech-writer.md', display: 'Sage - Technical Writer' },
-    { name: 'iris', file: 'agents/ux-designer.md', display: 'Iris - UX Designer' }
+    { name: 'iris', file: 'agents/ux-designer.md', display: 'Iris - UX Designer' },
+    { name: 'vishy', file: 'agents/visual-qa.md', display: 'Vishy - Visual QA Engineer' }
   ];
 
   let rulesCount = 0;
@@ -145,6 +146,7 @@ SAM orchestrates a team of AI agents to transform a PRD into working, tested cod
 1. **RED**: @titan writes failing tests based on acceptance criteria
 2. **GREEN**: @dyna writes minimal code to make tests pass
 3. **REFACTOR**: @argus reviews and improves code quality
+4. **VISUAL**: @vishy reviews UI (web apps only)
 
 ### Phase 4: Complete
 - @sage generates documentation
@@ -159,6 +161,7 @@ Mention @sam-tdd with a PRD or feature description to start the pipeline.
 - @titan - Test Architect (RED phase - write failing tests)
 - @dyna - Developer (GREEN phase - make tests pass)
 - @argus - Code Reviewer (REFACTOR phase)
+- @vishy - Visual QA Engineer (web apps only)
 - @sage - Technical Writer (documentation)
 - @iris - UX Designer (UX validation)
 `;
@@ -218,6 +221,12 @@ function generateAntigravitySkills(samDir, targetDir) {
       file: 'agents/ux-designer.md',
       display: 'Iris - UX Designer',
       description: 'UX validation, user experience review, interface design feedback'
+    },
+    {
+      name: 'sam-vishy',
+      file: 'agents/visual-qa.md',
+      display: 'Vishy - Visual QA Engineer',
+      description: 'Visual QA for web apps, CSS review, alignment issues, responsive design, spacing consistency'
     }
   ];
 
@@ -300,6 +309,7 @@ Invoke this skill when you want to:
 1. **RED**: sam-titan writes failing tests based on acceptance criteria
 2. **GREEN**: sam-dyna writes minimal code to make tests pass
 3. **REFACTOR**: sam-argus reviews and improves code quality
+4. **VISUAL**: sam-vishy reviews UI (web apps only)
 
 ### Phase 4: Complete
 - sam-sage generates documentation
@@ -314,6 +324,7 @@ Provide a PRD or feature description to start the autonomous TDD pipeline.
 - /sam-titan - Test Architect (RED phase)
 - /sam-dyna - Developer (GREEN phase)
 - /sam-argus - Code Reviewer (REFACTOR phase)
+- /sam-vishy - Visual QA Engineer (web apps only)
 - /sam-sage - Technical Writer (documentation)
 - /sam-iris - UX Designer (UX validation)
 `;
@@ -422,6 +433,7 @@ function install(platform, targetDir) {
     log('    /sam:sam:agents:dyna          - Dyna (Developer)');
     log('    /sam:sam:agents:titan         - Titan (Test Architect)');
     log('    /sam:sam:agents:argus         - Argus (Code Reviewer)');
+    log('    /sam:sam:agents:vishy         - Vishy (Visual QA)');
     log('    /sam:sam:agents:sage          - Sage (Tech Writer)');
     log('    /sam:sam:agents:iris          - Iris (UX Designer)');
     log('    /sam:core:workflows:autonomous-tdd - Full TDD Pipeline\n');
@@ -434,6 +446,7 @@ function install(platform, targetDir) {
     log('    @dyna      - Dyna (Developer)');
     log('    @titan     - Titan (Test Architect)');
     log('    @argus     - Argus (Code Reviewer)');
+    log('    @vishy     - Vishy (Visual QA)');
     log('    @sage      - Sage (Tech Writer)');
     log('    @iris      - Iris (UX Designer)');
     log('    @sam-tdd   - Full TDD Pipeline\n');
@@ -446,6 +459,7 @@ function install(platform, targetDir) {
     log('    /sam-dyna          - Dyna (Developer)');
     log('    /sam-titan         - Titan (Test Architect)');
     log('    /sam-argus         - Argus (Code Reviewer)');
+    log('    /sam-vishy         - Vishy (Visual QA)');
     log('    /sam-sage          - Sage (Tech Writer)');
     log('    /sam-iris          - Iris (UX Designer)');
     log('    /sam-tdd-pipeline  - Full TDD Pipeline\n');
