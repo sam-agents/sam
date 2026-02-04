@@ -146,7 +146,8 @@ SAM orchestrates a team of AI agents to transform a PRD into working, tested cod
 1. **RED**: @titan writes failing tests based on acceptance criteria
 2. **GREEN**: @dyna writes minimal code to make tests pass
 3. **REFACTOR**: @argus reviews and improves code quality
-4. **VISUAL**: @vishy reviews UI (web apps only)
+4. **UI**: @iris reviews layout and fixes alignment (web apps only)
+5. **CSS**: @cosmo reviews styling consistency (web apps only)
 
 ### Phase 4: Complete
 - @sage generates documentation
@@ -309,7 +310,8 @@ Invoke this skill when you want to:
 1. **RED**: sam-titan writes failing tests based on acceptance criteria
 2. **GREEN**: sam-dyna writes minimal code to make tests pass
 3. **REFACTOR**: sam-argus reviews and improves code quality
-4. **VISUAL**: sam-vishy reviews UI (web apps only)
+4. **UI**: sam-iris reviews layout and fixes alignment (web apps only)
+5. **CSS**: sam-cosmo reviews styling consistency (web apps only)
 
 ### Phase 4: Complete
 - sam-sage generates documentation

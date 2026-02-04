@@ -68,6 +68,7 @@ npx sam-agents --platform all          # All platforms
    - **RED**: Titan writes failing tests
    - **GREEN**: Dyna writes minimal code to pass
    - **REFACTOR**: Argus improves code quality
+   - **UI**: Iris reviews layout and fixes alignment (web apps only)
    - **CSS**: Cosmo reviews styling consistency (web apps only)
 4. **Complete** - Sage generates documentation
 

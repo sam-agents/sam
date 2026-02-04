@@ -140,11 +140,12 @@ When web app IS detected, review styling code for:
 
 ## Integration with TDD Pipeline
 
-Cosmo runs **after Argus** in the REFACTOR phase:
+Cosmo runs **after Iris** in the TDD loop:
 1. RED - Titan writes tests
 2. GREEN - Dyna implements
 3. REFACTOR - Argus reviews code logic
-4. **CSS** - Cosmo reviews styling consistency (web apps only)
+4. UI - Iris reviews layout and fixes alignment (web apps only)
+5. **CSS** - Cosmo reviews styling consistency (web apps only)
 
 ## Frameworks & Tools Knowledge
 
