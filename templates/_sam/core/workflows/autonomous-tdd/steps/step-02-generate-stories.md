@@ -126,6 +126,38 @@ sdocs/autonomous-runs/<run-id>/stories/
 └── ...
 ```
 
+### 2.6 Generate Story Queue File
+
+**Create `story-queue.txt` in the run directory** for multi-pass pipeline orchestration.
+
+This file allows an external orchestrator to execute stories one at a time, each with a fresh context window.
+
+**Format:** One story per line, pipe-delimited:
+
+```
+STORY_ID|STORY_FILE_PATH|DEPENDENCY_IDS
+```
+
+- `STORY_ID`: The story identifier (e.g., `epic-1-story-1`)
+- `STORY_FILE_PATH`: Relative path to the story file from the run directory (e.g., `stories/epic-1-story-1.md`)
+- `DEPENDENCY_IDS`: Comma-separated list of story IDs that must be completed first (empty if no dependencies)
+
+**Example:**
+
+```
+epic-1-story-1|stories/epic-1-story-1.md|
+epic-1-story-2|stories/epic-1-story-2.md|epic-1-story-1
+epic-2-story-1|stories/epic-2-story-1.md|
+epic-2-story-2|stories/epic-2-story-2.md|epic-2-story-1
+epic-3-story-1|stories/epic-3-story-1.md|epic-1-story-1,epic-2-story-1
+```
+
+**Rules:**
+- Stories MUST be in **topological order** (dependencies before dependents)
+- Foundation stories (project setup, database, base config) come first
+- Lines starting with `#` are comments
+- Include stories for ALL PRD features — backend, frontend, integrations, everything
+
 **Story file template:**
 
 ```markdown
