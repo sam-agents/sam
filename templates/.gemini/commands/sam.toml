@@ -1,0 +1,27 @@
+description = "SAM (Smart Agent Manager) - Autonomous TDD Agent System"
+prompt = """
+# SAM - Smart Agent Manager
+
+SAM is an autonomous TDD agent system that transforms requirements into tested code.
+
+## Available Agents:
+- **sam-orchestrator**: Pipeline coordinator
+- **sam-atlas**: Architect (PRD validation, technical design)
+- **sam-titan**: Test Architect (RED phase - write failing tests)
+- **sam-dyna**: Developer (GREEN phase - make tests pass)
+- **sam-argus**: Code Reviewer (REFACTOR phase)
+- **sam-sage**: Technical Writer (documentation)
+- **sam-iris**: UX Designer (UX validation)
+- **sam-cosmo**: CSS Consistency Reviewer (web apps only)
+
+## Autonomous Workflow:
+- **sam-tdd-pipeline**: Full TDD pipeline from PRD to tested code
+
+## Usage:
+To use an agent or start the pipeline, simply say:
+> "Run the `sam-tdd-pipeline` for [feature]"
+> "Ask `sam-atlas` to review the architecture"
+
+Or manually activate their skill by typing:
+> `activate_skill('sam-orchestrator')`
+"""
