@@ -12,7 +12,7 @@ const RESET = '\x1b[0m';
 const BOLD = '\x1b[1m';
 const DIM = '\x1b[2m';
 
-const PLATFORMS = ['claude', 'cursor', 'antigravity', 'gemini', 'all'];
+const PLATFORMS = ['claude', 'cursor', 'antigravity', 'gemini', 'copilot', 'all'];
 
 function log(message, color = RESET) {
   console.log(`${color}${message}${RESET}`);
@@ -58,20 +58,21 @@ function showHelp() {
   log('  Autonomous TDD Agent System\n', CYAN);
   log('  Usage: npx sam-agents [options] [target-directory]\n');
   log('  Options:');
-  log('    --platform <name>  Target platform: claude, cursor, antigravity, gemini, all');
+  log('    --platform <name>  Target platform: claude, cursor, antigravity, gemini, copilot, all');
   log('    --help, -h         Show this help message');
   log('    --version, -v      Show version number\n');
   log('  Examples:');
   log('    npx sam-agents                         Interactive mode');
   log('    npx sam-agents --platform cursor       Install for Cursor');
-  log('    npx sam-agents --platform gemini       Install for Gemini CLI');
+  log('    npx sam-agents --platform copilot      Install for GitHub Copilot');
   log('    npx sam-agents --platform all          Install for all platforms');
   log('    npx sam-agents ./myapp                 Install in ./myapp directory\n');
   log('  Supported Platforms:');
   log('    claude      - Claude Code CLI (.claude/commands/)');
   log('    cursor      - Cursor IDE (.cursor/rules/)');
   log('    antigravity - Google Antigravity IDE (.agent/skills/)');
-  log('    gemini      - Gemini CLI (.gemini/skills/)\n');
+  log('    gemini      - Gemini CLI (.gemini/skills/)');
+  log('    copilot     - GitHub Copilot (.github/copilot-instructions.md)\n');
 }
 
 function copyDocumentationToReferences(samDir, targetDir, referencesDir, platform) {
@@ -579,6 +580,128 @@ Provide a PRD or feature description to start the autonomous TDD pipeline.
   return skillsCount;
 }
 
+function generateCopilotSkills(samDir, targetDir) {
+  const githubDir = path.join(targetDir, '.github');
+  const copilotDir = path.join(githubDir, 'copilot');
+  const referencesDir = path.join(copilotDir, 'references');
+
+  if (!fs.existsSync(referencesDir)) {
+    fs.mkdirSync(referencesDir, { recursive: true });
+  }
+
+  const agents = [
+    {
+      name: 'sam-orchestrator',
+      file: 'core/agents/sam-master.md',
+      display: 'SAM Orchestrator',
+      description: 'Orchestrate autonomous TDD pipeline, coordinate SAM agents, manage RED-GREEN-REFACTOR workflow'
+    },
+    {
+      name: 'sam-atlas',
+      file: 'agents/architect.md',
+      display: 'Atlas - System Architect',
+      description: 'Architecture review, PRD validation, technical design, system design decisions'
+    },
+    {
+      name: 'sam-titan',
+      file: 'agents/test.md',
+      display: 'Titan - Test Architect',
+      description: 'Write failing tests, RED phase of TDD, test architecture, acceptance criteria validation'
+    },
+    {
+      name: 'sam-dyna',
+      file: 'agents/dev.md',
+      display: 'Dyna - Developer',
+      description: 'Implement code to pass tests, GREEN phase of TDD, minimal implementation'
+    },
+    {
+      name: 'sam-argus',
+      file: 'agents/reviewer.md',
+      display: 'Argus - Code Reviewer',
+      description: 'Code review, REFACTOR phase of TDD, quality improvement, best practices'
+    },
+    {
+      name: 'sam-sage',
+      file: 'agents/tech-writer.md',
+      display: 'Sage - Technical Writer',
+      description: 'Generate documentation, technical writing, API docs, README creation'
+    },
+    {
+      name: 'sam-iris',
+      file: 'agents/ux-designer.md',
+      display: 'Iris - UX Designer',
+      description: 'UX validation, user experience review, interface design feedback'
+    },
+    {
+      name: 'sam-cosmo',
+      file: 'agents/css-reviewer.md',
+      display: 'Cosmo - CSS Consistency Reviewer',
+      description: 'CSS consistency review for web apps, spacing scale violations, hardcoded values, styling anti-patterns'
+    }
+  ];
+
+  let skillsCount = 0;
+  let instructionsContent = `# SAM (Smart Agent Manager) - GitHub Copilot Instructions
+
+This repository uses SAM, an autonomous TDD (Test-Driven Development) agent system.
+You can invoke specialized agents for different parts of the development lifecycle.
+
+## How to use SAM Agents
+When the user asks you to act as a specific SAM agent, adopt the persona and follow the instructions for that agent.
+These agents have access to project documentation, design standards, and other agent definitions in the references folder.
+
+`;
+
+  for (const agent of agents) {
+    const agentPath = path.join(samDir, agent.file);
+    if (fs.existsSync(agentPath)) {
+      const content = fs.readFileSync(agentPath, 'utf8');
+      const agentFile = `sam-${agent.name.replace('sam-', '')}.md`;
+      const agentDestPath = path.join(copilotDir, agentFile);
+
+      fs.writeFileSync(agentDestPath, content);
+
+      instructionsContent += `### ${agent.display}
+- **Invocation**: "Act as ${agent.name}" or "Use the ${agent.display} persona"
+- **Role**: ${agent.description}
+- **Detailed Instructions**: [.github/copilot/${agentFile}](.github/copilot/${agentFile})
+
+`;
+      skillsCount++;
+    }
+  }
+
+  // Add TDD Pipeline
+  const workflowPath = path.join(samDir, 'core/workflows/autonomous-tdd/workflow.md');
+  if (fs.existsSync(workflowPath)) {
+    const workflowContent = fs.readFileSync(workflowPath, 'utf8');
+    fs.writeFileSync(path.join(copilotDir, 'sam-tdd-pipeline.md'), workflowContent);
+
+    instructionsContent += `## SAM Autonomous TDD Pipeline
+Transform a PRD into working, tested code using specialized agents.
+
+### The Pipeline
+1. **Validate PRD**: sam-atlas (Architect) & sam-iris (UX)
+2. **Generate Stories**: Break into epics and user stories
+3. **TDD Loop**:
+   - **RED**: sam-titan (Test Architect)
+   - **GREEN**: sam-dyna (Developer)
+   - **REFACTOR**: sam-argus (Reviewer)
+4. **Finalize**: sam-sage (Technical Writer)
+
+- **Detailed Workflow**: [.github/copilot/sam-tdd-pipeline.md](.github/copilot/sam-tdd-pipeline.md)
+`;
+  }
+
+  // Copy common documentation references
+  copyDocumentationToReferences(samDir, targetDir, referencesDir, 'copilot');
+
+  fs.writeFileSync(path.join(githubDir, 'copilot-instructions.md'), instructionsContent);
+  skillsCount++;
+
+  return skillsCount;
+}
+
 async function promptPlatform() {
   const rl = readline.createInterface({
     input: process.stdin,
@@ -593,10 +716,11 @@ async function promptPlatform() {
     log('    2) Cursor        ' + DIM + '(.cursor/rules/)' + RESET);
     log('    3) Antigravity   ' + DIM + '(.agent/skills/)' + RESET);
     log('    4) Gemini CLI    ' + DIM + '(.gemini/skills/)' + RESET);
-    log('    5) All           ' + DIM + '(install for all platforms)' + RESET);
+    log('    5) GitHub Copilot ' + DIM + '(.github/copilot-instructions.md)' + RESET);
+    log('    6) All           ' + DIM + '(install for all platforms)' + RESET);
     log('');
 
-    rl.question('  Enter choice [1-5]: ', (answer) => {
+    rl.question('  Enter choice [1-6]: ', (answer) => {
       rl.close();
       const choice = answer.trim();
 
@@ -608,7 +732,9 @@ async function promptPlatform() {
         resolve('antigravity');
       } else if (choice === '4' || choice.toLowerCase() === 'gemini') {
         resolve('gemini');
-      } else if (choice === '5' || choice.toLowerCase() === 'both' || choice.toLowerCase() === 'all') {
+      } else if (choice === '5' || choice.toLowerCase() === 'copilot') {
+        resolve('copilot');
+      } else if (choice === '6' || choice.toLowerCase() === 'both' || choice.toLowerCase() === 'all') {
         resolve('all');
       } else if (choice === '') {
         // Default to gemini (since we're in gemini)
@@ -678,6 +804,12 @@ function install(platform, targetDir) {
     log(`  ✓ Generated .gemini/skills/ (${geminiSkillsCount} skills)`, GREEN);
   }
 
+  // Install GitHub Copilot integration
+  if (platform === 'copilot' || platform === 'all') {
+    const copilotSkillsCount = generateCopilotSkills(samDir, targetDir);
+    log(`  ✓ Generated .github/copilot/ (${copilotSkillsCount} files)`, GREEN);
+  }
+
   log('\n' + BOLD + '  Installation complete!' + RESET + '\n');
 
   if (platform === 'claude' || platform === 'all') {
@@ -732,6 +864,19 @@ function install(platform, targetDir) {
     log('    sam-tdd-pipeline  - Full TDD Pipeline\n');
   }
 
+  if (platform === 'copilot' || platform === 'all') {
+    log('  GitHub Copilot Instructions (ask Copilot):', CYAN);
+    log('    "Act as sam-orchestrator" - SAM Orchestrator');
+    log('    "Act as sam-atlas"        - Atlas (Architect)');
+    log('    "Act as sam-dyna"         - Dyna (Developer)');
+    log('    "Act as sam-titan"        - Titan (Test Architect)');
+    log('    "Act as sam-argus"        - Argus (Code Reviewer)');
+    log('    "Act as sam-cosmo"        - Cosmo (CSS Reviewer)');
+    log('    "Act as sam-sage"         - Sage (Tech Writer)');
+    log('    "Act as sam-iris"         - Iris (UX Designer)');
+    log('    "Run TDD pipeline"        - Full TDD Pipeline\n');
+  }
+
   if (platform === 'claude' || platform === 'all') {
     log('  Restart Claude Code to load the new skills.', YELLOW);
   }
@@ -743,6 +888,9 @@ function install(platform, targetDir) {
   }
   if (platform === 'gemini' || platform === 'all') {
     log('  Gemini CLI will auto-detect skills in .gemini/skills/', YELLOW);
+  }
+  if (platform === 'copilot' || platform === 'all') {
+    log('  GitHub Copilot will auto-detect instructions in .github/copilot-instructions.md', YELLOW);
   }
   log('');
 }

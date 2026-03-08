@@ -1,12 +1,12 @@
 # GEMINI.md - SAM (Smart Agent Manager)
 
 ## Project Overview
-SAM (Smart Agent Manager) is an autonomous TDD (Test-Driven Development) agent system designed to orchestrate a team of specialized AI agents. It integrates with AI coding tools like **Claude Code**, **Cursor**, and **Google Antigravity** to transform requirements (PRDs) into tested, working code using a strict RED-GREEN-REFACTOR workflow.
+SAM (Smart Agent Manager) is an autonomous TDD (Test-Driven Development) agent system designed to orchestrate a team of specialized AI agents. It integrates with AI coding tools like **Claude Code**, **Cursor**, **GitHub Copilot**, and **Google Antigravity** to transform requirements (PRDs) into tested, working code using a strict RED-GREEN-REFACTOR workflow.
 
 ### Core Technologies
 - **Node.js**: The CLI tool is built with Node.js (>= 16.0.0).
 - **Markdown**: Agent definitions, instructions, and workflows are defined in Markdown files.
-- **AI Platforms**: Native integrations for Claude Code (skills), Cursor (rules), and Antigravity (skills).
+- **AI Platforms**: Native integrations for Claude Code (skills), Cursor (rules), GitHub Copilot (instructions), and Antigravity (skills).
 - **TDD Workflow**: Orchestrates a pipeline involving Atlas (Architect), Titan (Test Architect), Dyna (Developer), Argus (Reviewer), and other specialized agents.
 
 ### Key Directory Structure
@@ -30,6 +30,7 @@ npx sam-agents
 npx sam-agents --platform gemini
 npx sam-agents --platform claude
 npx sam-agents --platform cursor
+npx sam-agents --platform copilot
 npx sam-agents --platform antigravity
 npx sam-agents --platform all
 ```
@@ -42,7 +43,7 @@ node bin/cli.js [options] [target-directory]
 ```
 
 ### Key Commands
-- `--platform <name>`: Specify the target platform (gemini, claude, cursor, antigravity, all).
+- `--platform <name>`: Specify the target platform (gemini, claude, cursor, copilot, antigravity, all).
 - `--help, -h`: Show help message.
 - `--version, -v`: Show version number.
 
@@ -71,6 +72,7 @@ All development should follow the autonomous TDD pipeline:
 - **Gemini CLI**: Uses `.gemini/skills/` to define agent skills. Use `activate_skill('sam-orchestrator')` to start the pipeline.
 - **Claude Code**: Uses `.claude/commands/sam/` to define `/sam:` commands.
 - **Cursor**: Uses `.cursor/rules/` to define `@agent` rules (generated as `.mdc` files).
+- **GitHub Copilot**: Uses `.github/copilot-instructions.md` to define repository-wide instructions.
 - **Antigravity**: Uses `.agent/skills/` to define `/sam-` skills.
 
 ### Contribution Guidelines
