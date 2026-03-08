@@ -667,6 +667,13 @@ function install(platform, targetDir) {
 
   // Install Gemini CLI integration
   if (platform === 'gemini' || platform === 'all') {
+    const geminiCommandsDir = path.join(targetDir, '.gemini', 'commands');
+    const geminiTemplateDir = path.join(templatesDir, '.gemini', 'commands');
+    if (fs.existsSync(geminiTemplateDir)) {
+      copyRecursive(geminiTemplateDir, geminiCommandsDir);
+      const geminiCmdCount = countFiles(geminiCommandsDir);
+      log(`  ✓ Copied .gemini/commands/ (${geminiCmdCount} files)`, GREEN);
+    }
     const geminiSkillsCount = generateGeminiSkills(samDir, targetDir);
     log(`  ✓ Generated .gemini/skills/ (${geminiSkillsCount} skills)`, GREEN);
   }
