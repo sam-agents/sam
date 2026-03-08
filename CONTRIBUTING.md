@@ -37,6 +37,16 @@ Thank you for your interest in contributing to SAM! We welcome contributions fro
 
 ### Testing Your Changes
 
+Before submitting your PR, run the automated verification script from the root of the project to ensure everything is correct:
+
+```bash
+# Run the pre-PR verification suite
+node verify_pr.js
+```
+
+*This script will ensure that your changes haven't broken the Gemini integration or core SAM logic.*
+
+You can also test the CLI locally manually:
 ```bash
 # Test the CLI locally
 node bin/cli.js ./test-folder
