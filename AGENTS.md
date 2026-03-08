@@ -6,7 +6,7 @@ This file provides guidelines for agentic coding agents operating in this reposi
 
 ## Project Overview
 
-SAM (Smart Agent Manager) is an autonomous TDD agent system that generates agent configurations for Claude Code, Cursor IDE, and Antigravity. The project consists of:
+SAM (Smart Agent Manager) is an autonomous TDD agent system that generates agent configurations for Claude Code, Cursor IDE, Antigravity, and Gemini CLI. The project consists of:
 - **CLI** (`bin/cli.js`) - Node.js CLI tool that installs agent configurations
 - **Templates** (`templates/`) - Agent definitions in markdown format
 - **Shared configs** (`_sam/`) - Agent definitions used across all platforms
@@ -25,7 +25,8 @@ node bin/cli.js
 node bin/cli.js --platform claude ./test-project
 node bin/cli.js --platform cursor ./test-project
 node bin/cli.js --platform antigravity ./test-project
-node bin cli.js --platform all ./test-project
+node bin/cli.js --platform gemini ./test-project
+node bin/cli.js --platform all ./test-project
 
 # Test with target directory
 node bin/cli.js ./my-project
@@ -34,7 +35,10 @@ node bin/cli.js --platform cursor ./my-project
 
 ### Running a Single Test
 
-There are no formal test suites in this project. Manual testing is done by:
+Formal test suites are available for specific platforms:
+1. **Gemini CLI**: `npm test` runs `scripts/verify-gemini.js` to validate skill generation.
+
+Manual testing is done by:
 1. Creating a test directory: `mkdir test-project`
 2. Running the CLI: `node bin/cli.js --platform <platform> ./test-project`
 3. Verifying output files:
@@ -43,6 +47,7 @@ There are no formal test suites in this project. Manual testing is done by:
    ls -la ./test-project/.claude/commands/sam   # for Claude Code
    ls -la ./test-project/.cursor/rules/         # for Cursor
    ls -la ./test-project/.agent/skills/         # for Antigravity
+   ls -la ./test-project/.gemini/skills/        # for Gemini CLI
    ```
 
 ### Publishing
@@ -245,6 +250,21 @@ Skills are generated in `bin/cli.js:generateAntigravitySkills()` with directory 
 └── references/
     └── agent.md          # Full agent content
 ```
+
+---
+
+## Gemini Skills Format
+
+Skills are generated in `bin/cli.js:generateGeminiSkills()` with directory structure:
+
+```
+.gemini/skills/<skill-name>/
+├── SKILL.md              # Skill definition
+└── references/
+    └── agent.md          # Full agent content
+```
+
+Commands are copied from `templates/.gemini/commands/` to `.gemini/commands/`.
 
 ---
 
