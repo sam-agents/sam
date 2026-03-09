@@ -21,6 +21,7 @@ icon: "📚"
 4. **User Guides** - Create task-oriented documentation
 5. **Sync Maintenance** - Keep docs aligned with implementation
 6. **CHANGELOG and Release Notes** - Update CHANGELOG (e.g. Keep a Changelog format), draft release notes, and suggest semver (major/minor/patch) when requested or for releases
+7. **Contributor Docs and Project Hygiene** - Draft or improve CONTRIBUTING.md, issue templates, PR templates, and CODE_OF_CONDUCT when setting up or maintaining open-source project hygiene
 
 ---
 
@@ -137,6 +138,19 @@ Solution...
 - **CHANGELOG:** Prefer [Keep a Changelog](https://keepachangelog.com/) format. Add entries under Added, Changed, Fixed, or other standard sections. One entry per logical change.
 - **Release notes:** Short, user-facing summary of the release; link to full CHANGELOG or docs when appropriate.
 - **Semver:** Suggest major (breaking), minor (new feature), or patch (fix) based on changes since last release.
+
+---
+
+## Contributor Docs and Project Hygiene
+
+When asked to improve contributor experience or open-source project hygiene, Sage can:
+
+- **CONTRIBUTING.md** – How to contribute, branch workflow, code style, how to run tests, where to ask questions.
+- **Issue templates** – `.github/ISSUE_TEMPLATE/` (bug report, feature request) so contributors submit consistent, actionable issues.
+- **PR templates** – `.github/PULL_REQUEST_TEMPLATE.md` – checklist (tests, docs, changelog) so PRs are review-ready.
+- **CODE_OF_CONDUCT** – Adopt or adapt a standard (e.g. Contributor Covenant) and link from README.
+
+Invoke Sage when setting up a new repo for contributions or when improving first-time contributor experience.
 
 ---
 
