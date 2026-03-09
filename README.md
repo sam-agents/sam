@@ -18,7 +18,8 @@ npx sam-agents
 npx sam-agents --platform claude       # Claude Code
 npx sam-agents --platform cursor       # Cursor IDE
 npx sam-agents --platform antigravity  # Google Antigravity
-npx sam-agents --platform all          # All platforms
+npx sam-agents --platform context7    # Context7 / Universal (.agents/skills/)
+npx sam-agents --platform all         # All platforms
 ```
 
 ## Supported Platforms
@@ -28,6 +29,7 @@ npx sam-agents --platform all          # All platforms
 | **Claude Code** | `npx sam-agents --platform claude` | `/sam:` commands |
 | **Cursor** | `npx sam-agents --platform cursor` | `@agent` mentions |
 | **Antigravity** | `npx sam-agents --platform antigravity` | `/sam-` skills |
+| **Context7** | `npx sam-agents --platform context7` | `.agents/skills/` (Universal — Gemini CLI, Copilot, etc.) |
 
 ## Why SAM?
 
@@ -37,7 +39,7 @@ npx sam-agents --platform all          # All platforms
 | **BYOA** | Use your own AI subscription | Pay per API call (5-10x cost) |
 | **Transparency** | Watch agents work in real-time | Black box |
 | **Autonomous** | Minimal intervention after PRD | Constant hand-holding |
-| **Multi-Platform** | Claude Code + Cursor + Antigravity | Single platform lock-in |
+| **Multi-Platform** | Claude Code + Cursor + Antigravity + Context7 | Single platform lock-in |
 
 ## Available Agents
 
@@ -81,7 +83,8 @@ your-project/
 │   └── core/workflows/        # TDD pipeline workflow
 ├── .claude/commands/sam/      # Claude Code skills
 ├── .cursor/rules/             # Cursor rules
-└── .agent/skills/             # Antigravity skills
+├── .agent/skills/             # Antigravity skills
+└── .agents/skills/            # Context7 / Universal (Gemini CLI, Copilot, etc.) — see [docs/CONTEXT7.md](docs/CONTEXT7.md)
 ```
 
 ## Requirements
@@ -91,6 +94,7 @@ your-project/
   - [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code)
   - [Cursor](https://cursor.com)
   - [Google Antigravity](https://antigravity.google)
+  - A Context7-compatible client (e.g. Gemini CLI, GitHub Copilot) — use `--platform context7`; see [docs/CONTEXT7.md](docs/CONTEXT7.md) for MCP and CLI usage.
 
 ## Contributing
 
