@@ -19,15 +19,32 @@ Thank you for your interest in contributing to SAM! We welcome contributions fro
 2. Describe the feature and its use case
 3. Explain how it fits with SAM's TDD-first philosophy
 
+### Quick start for contributors
+
+For the full branch workflow (create branch → change → push → back to main → next branch) and the build checklist for implementing improvements, see **[OPEN_SOURCE_PLAN.md](OPEN_SOURCE_PLAN.md)** — especially **section 3.2** (step-by-step workflow) and **section 5** (quick reference commands).
+
 ### Submitting Changes
 
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/your-feature`
+2. **Start from latest main and create a branch:**
+   ```bash
+   git checkout main
+   git pull origin main
+   git checkout -b feature/your-feature
+   ```
 3. Make your changes
-4. Test your changes locally with `npx . ./test-project`
+4. Test your changes locally: `node bin/cli.js ./test-project` (or `npx . ./test-project`)
 5. Commit with a clear message: `git commit -m "Add: your feature description"`
 6. Push to your fork: `git push origin feature/your-feature`
-7. Open a Pull Request
+7. Open a Pull Request targeting `main`
+8. **After your PR is merged**, start the next change from main again:
+   ```bash
+   git checkout main
+   git pull origin main
+   git checkout -b feature/next-feature
+   ```
+
+For the complete branch strategy and suggested improvement order, see [OPEN_SOURCE_PLAN.md](OPEN_SOURCE_PLAN.md).
 
 ### Code Style
 
@@ -65,6 +82,17 @@ When adding or modifying agents:
 2. **Clear responsibilities** - Each agent has a specific role; don't overlap
 3. **Consistent personality** - Agents have distinct communication styles
 4. **Update manifests** - Keep `_sam/_config/agent-manifest.csv` in sync
+5. **Keep templates in sync** - When adding or changing agents, update both `_sam/` and `templates/_sam/` (and `bin/cli.js` + README when adding agents). See [OPEN_SOURCE_PLAN.md](OPEN_SOURCE_PLAN.md).
+
+### Open-source–relevant skills
+
+We welcome agents that make SAM more useful for open-source projects. Ideas (see [OPEN_SOURCE_PLAN.md](OPEN_SOURCE_PLAN.md) for details):
+
+- **Security reviewer** – dependency audit, secure coding, secrets/CVE awareness
+- **Changelog / release notes** – CHANGELOG, semver, release notes (e.g. extend Sage)
+- **Contributor docs** – CONTRIBUTING, issue/PR templates
+- **Accessibility (a11y)** – WCAG, keyboard nav, semantics (web apps)
+- **Dependency upkeep** – dependency updates, breaking-change checks
 
 ## Questions?
 
