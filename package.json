@@ -36,9 +36,10 @@
     "node": ">=16.0.0"
   },
   "scripts": {
-    "test": "node scripts/verify-manifest.js && node scripts/verify-sync.js",
+    "test": "node scripts/verify-manifest.js && node scripts/verify-sync.js && node scripts/verify-gemini.js",
     "verify:sync": "node scripts/verify-sync.js",
     "verify:manifest": "node scripts/verify-manifest.js",
+    "verify:gemini": "node scripts/verify-gemini.js",
     "sync-templates": "node scripts/sync-templates.js"
   }
 }

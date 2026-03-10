@@ -37,6 +37,19 @@ Thank you for your interest in contributing to SAM! We welcome contributions fro
 
 ### Testing Your Changes
 
+Before submitting your PR, run the verification scripts to ensure everything is correct:
+
+```bash
+# Run all checks (manifest + sync + gemini verification)
+npm test
+
+# Or run individually
+node scripts/verify-manifest.js
+node scripts/verify-sync.js
+node scripts/verify-gemini.js
+```
+
+You can also test the CLI locally manually:
 ```bash
 # Test the CLI locally
 node bin/cli.js ./test-folder
