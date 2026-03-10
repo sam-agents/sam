@@ -93,7 +93,10 @@ function generateCursorRules(samDir, targetDir) {
     { name: 'argus', file: 'agents/reviewer.md', display: 'Argus - Code Reviewer' },
     { name: 'sage', file: 'agents/tech-writer.md', display: 'Sage - Technical Writer' },
     { name: 'iris', file: 'agents/ux-designer.md', display: 'Iris - UX Designer' },
-    { name: 'cosmo', file: 'agents/css-reviewer.md', display: 'Cosmo - CSS Consistency Reviewer' }
+    { name: 'cosmo', file: 'agents/css-reviewer.md', display: 'Cosmo - CSS Consistency Reviewer' },
+    { name: 'sentinel', file: 'agents/security-reviewer.md', display: 'Sentinel - Security Reviewer' },
+    { name: 'aria', file: 'agents/accessibility-reviewer.md', display: 'Aria - Accessibility Reviewer' },
+    { name: 'upkeep', file: 'agents/dependency-upkeep.md', display: 'Upkeep - Dependency and Maintenance' }
   ];
 
   let rulesCount = 0;
@@ -153,9 +156,12 @@ SAM orchestrates a team of AI agents to transform a PRD into working, tested cod
 3. **REFACTOR**: @argus reviews and improves code quality
 4. **UI**: @iris reviews layout and fixes alignment (web apps only)
 5. **CSS**: @cosmo reviews styling consistency (web apps only)
+6. **A11y**: @aria reviews accessibility (web apps only)
+7. **Security** (optional): @sentinel reviews for vulnerabilities and secrets
 
 ### Phase 4: Complete
 - @sage generates documentation
+- @sentinel (optional) security audit for open-source/release
 - Final review and handoff
 
 ## Usage
@@ -168,6 +174,9 @@ Mention @sam-tdd with a PRD or feature description to start the pipeline.
 - @dyna - Developer (GREEN phase - make tests pass)
 - @argus - Code Reviewer (REFACTOR phase)
 - @cosmo - CSS Consistency Reviewer (web apps only)
+- @sentinel - Security Reviewer (optional)
+- @aria - Accessibility Reviewer (web apps only)
+- @upkeep - Upkeep (dependency updates, on demand)
 - @sage - Technical Writer (documentation)
 - @iris - UX Designer (UX validation)
 `;
@@ -233,6 +242,24 @@ function generateAntigravitySkills(samDir, targetDir) {
       file: 'agents/css-reviewer.md',
       display: 'Cosmo - CSS Consistency Reviewer',
       description: 'CSS consistency review for web apps, spacing scale violations, hardcoded values, styling anti-patterns'
+    },
+    {
+      name: 'sam-sentinel',
+      file: 'agents/security-reviewer.md',
+      display: 'Sentinel - Security Reviewer',
+      description: 'Security audit, dependency CVEs, secrets detection, secure coding review (optional phase)'
+    },
+    {
+      name: 'sam-aria',
+      file: 'agents/accessibility-reviewer.md',
+      display: 'Aria - Accessibility Reviewer',
+      description: 'Accessibility review for web apps, WCAG, keyboard nav, semantics, contrast (after Cosmo)'
+    },
+    {
+      name: 'sam-upkeep',
+      file: 'agents/dependency-upkeep.md',
+      display: 'Upkeep - Dependency and Maintenance',
+      description: 'Dependency updates, lockfile maintenance, breaking-change assessment (on demand)'
     }
   ];
 
@@ -317,9 +344,12 @@ Invoke this skill when you want to:
 3. **REFACTOR**: sam-argus reviews and improves code quality
 4. **UI**: sam-iris reviews layout and fixes alignment (web apps only)
 5. **CSS**: sam-cosmo reviews styling consistency (web apps only)
+6. **A11y**: sam-aria reviews accessibility (web apps only)
+7. **Security** (optional): sam-sentinel reviews for vulnerabilities and secrets
 
 ### Phase 4: Complete
 - sam-sage generates documentation
+- sam-sentinel (optional) security audit for open-source/release
 - Final review and handoff
 
 ## Usage
@@ -332,6 +362,9 @@ Provide a PRD or feature description to start the autonomous TDD pipeline.
 - /sam-dyna - Developer (GREEN phase)
 - /sam-argus - Code Reviewer (REFACTOR phase)
 - /sam-cosmo - CSS Consistency Reviewer (web apps only)
+- /sam-sentinel - Security Reviewer (optional)
+- /sam-aria - Accessibility Reviewer (web apps only)
+- /sam-upkeep - Dependency and Maintenance (on demand)
 - /sam-sage - Technical Writer (documentation)
 - /sam-iris - UX Designer (UX validation)
 `;
@@ -403,6 +436,24 @@ function generateGeminiSkills(samDir, targetDir) {
       file: 'agents/css-reviewer.md',
       display: 'Cosmo - CSS Consistency Reviewer',
       description: 'CSS consistency review for web apps, spacing scale violations, hardcoded values, styling anti-patterns'
+    },
+    {
+      name: 'sam-sentinel',
+      file: 'agents/security-reviewer.md',
+      display: 'Sentinel - Security Reviewer',
+      description: 'Security audit, dependency CVEs, secrets detection, secure coding review (optional phase)'
+    },
+    {
+      name: 'sam-aria',
+      file: 'agents/accessibility-reviewer.md',
+      display: 'Aria - Accessibility Reviewer',
+      description: 'Accessibility review for web apps, WCAG, keyboard nav, semantics, contrast (after Cosmo)'
+    },
+    {
+      name: 'sam-upkeep',
+      file: 'agents/dependency-upkeep.md',
+      display: 'Upkeep - Dependency and Maintenance',
+      description: 'Dependency updates, lockfile maintenance, breaking-change assessment (on demand)'
     }
   ];
 
@@ -487,9 +538,12 @@ Invoke this skill when you want to:
 3. **REFACTOR**: sam-argus reviews and improves code quality
 4. **UI**: sam-iris reviews layout and fixes alignment (web apps only)
 5. **CSS**: sam-cosmo reviews styling consistency (web apps only)
+6. **A11y**: sam-aria reviews accessibility (web apps only)
+7. **Security** (optional): sam-sentinel reviews for vulnerabilities and secrets
 
 ### Phase 4: Complete
 - sam-sage generates documentation
+- sam-sentinel (optional) security audit for open-source/release
 - Final review and handoff
 
 ## Usage
@@ -502,6 +556,9 @@ Provide a PRD or feature description to start the autonomous TDD pipeline.
 - activate_skill('sam-dyna') - Developer (GREEN phase)
 - activate_skill('sam-argus') - Code Reviewer (REFACTOR phase)
 - activate_skill('sam-cosmo') - CSS Consistency Reviewer (web apps only)
+- activate_skill('sam-sentinel') - Security Reviewer (optional)
+- activate_skill('sam-aria') - Accessibility Reviewer (web apps only)
+- activate_skill('sam-upkeep') - Dependency and Maintenance (on demand)
 - activate_skill('sam-sage') - Technical Writer (documentation)
 - activate_skill('sam-iris') - UX Designer (UX validation)
 `;
@@ -574,6 +631,24 @@ function generateCopilotSkills(samDir, targetDir) {
       file: 'agents/css-reviewer.md',
       display: 'Cosmo - CSS Consistency Reviewer',
       description: 'CSS consistency review for web apps, spacing scale violations, hardcoded values, styling anti-patterns'
+    },
+    {
+      name: 'sam-sentinel',
+      file: 'agents/security-reviewer.md',
+      display: 'Sentinel - Security Reviewer',
+      description: 'Security audit, dependency CVEs, secrets detection, secure coding review (optional phase)'
+    },
+    {
+      name: 'sam-aria',
+      file: 'agents/accessibility-reviewer.md',
+      display: 'Aria - Accessibility Reviewer',
+      description: 'Accessibility review for web apps, WCAG, keyboard nav, semantics, contrast (after Cosmo)'
+    },
+    {
+      name: 'sam-upkeep',
+      file: 'agents/dependency-upkeep.md',
+      display: 'Upkeep - Dependency and Maintenance',
+      description: 'Dependency updates, lockfile maintenance, breaking-change assessment (on demand)'
     }
   ];
 
@@ -626,7 +701,10 @@ Transform a PRD into working, tested code using specialized agents.
    - **RED**: sam-titan (Test Architect)
    - **GREEN**: sam-dyna (Developer)
    - **REFACTOR**: sam-argus (Reviewer)
-4. **Finalize**: sam-sage (Technical Writer)
+   - **CSS**: sam-cosmo (CSS Reviewer, web apps only)
+   - **A11y**: sam-aria (Accessibility Reviewer, web apps only)
+   - **Security** (optional): sam-sentinel (Security Reviewer)
+4. **Finalize**: sam-sage (Technical Writer); sam-sentinel (optional) security audit
 
 - **Detailed Workflow**: copilot-integration/agents/sam-tdd-pipeline.md
 `;
@@ -756,6 +834,9 @@ function install(platform, targetDir) {
     log('    /sam:sam:agents:titan         - Titan (Test Architect)');
     log('    /sam:sam:agents:argus         - Argus (Code Reviewer)');
     log('    /sam:sam:agents:cosmo         - Cosmo (CSS Reviewer)');
+    log('    /sam:sam:agents:sentinel      - Sentinel (Security Reviewer)');
+    log('    /sam:sam:agents:aria          - Aria (Accessibility Reviewer)');
+    log('    /sam:sam:agents:upkeep        - Upkeep (Dependency and Maintenance)');
     log('    /sam:sam:agents:sage          - Sage (Tech Writer)');
     log('    /sam:sam:agents:iris          - Iris (UX Designer)');
     log('    /sam:core:workflows:autonomous-tdd - Full TDD Pipeline\n');
@@ -769,6 +850,9 @@ function install(platform, targetDir) {
     log('    @titan     - Titan (Test Architect)');
     log('    @argus     - Argus (Code Reviewer)');
     log('    @cosmo     - Cosmo (CSS Reviewer)');
+    log('    @sentinel  - Sentinel (Security Reviewer)');
+    log('    @aria      - Aria (Accessibility Reviewer)');
+    log('    @upkeep    - Upkeep (Dependency and Maintenance)');
     log('    @sage      - Sage (Tech Writer)');
     log('    @iris      - Iris (UX Designer)');
     log('    @sam-tdd   - Full TDD Pipeline\n');
@@ -782,6 +866,9 @@ function install(platform, targetDir) {
     log('    /sam-titan         - Titan (Test Architect)');
     log('    /sam-argus         - Argus (Code Reviewer)');
     log('    /sam-cosmo         - Cosmo (CSS Reviewer)');
+    log('    /sam-sentinel      - Sentinel (Security Reviewer)');
+    log('    /sam-aria          - Aria (Accessibility Reviewer)');
+    log('    /sam-upkeep        - Upkeep (Dependency and Maintenance)');
     log('    /sam-sage          - Sage (Tech Writer)');
     log('    /sam-iris          - Iris (UX Designer)');
     log('    /sam-tdd-pipeline  - Full TDD Pipeline\n');
@@ -795,6 +882,9 @@ function install(platform, targetDir) {
     log('    sam-titan         - Titan (Test Architect)');
     log('    sam-argus         - Argus (Code Reviewer)');
     log('    sam-cosmo         - Cosmo (CSS Reviewer)');
+    log('    sam-sentinel      - Sentinel (Security Reviewer)');
+    log('    sam-aria          - Aria (Accessibility Reviewer)');
+    log('    sam-upkeep        - Upkeep (Dependency and Maintenance)');
     log('    sam-sage          - Sage (Tech Writer)');
     log('    sam-iris          - Iris (UX Designer)');
     log('    sam-tdd-pipeline  - Full TDD Pipeline\n');
@@ -808,6 +898,9 @@ function install(platform, targetDir) {
     log('    "Act as sam-titan"        - Titan (Test Architect)');
     log('    "Act as sam-argus"        - Argus (Code Reviewer)');
     log('    "Act as sam-cosmo"        - Cosmo (CSS Reviewer)');
+    log('    "Act as sam-sentinel"     - Sentinel (Security Reviewer)');
+    log('    "Act as sam-aria"         - Aria (Accessibility Reviewer)');
+    log('    "Act as sam-upkeep"       - Upkeep (Dependency and Maintenance)');
     log('    "Act as sam-sage"         - Sage (Tech Writer)');
     log('    "Act as sam-iris"         - Iris (UX Designer)');
     log('    "Run TDD pipeline"        - Full TDD Pipeline\n');

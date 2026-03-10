@@ -53,6 +53,9 @@ npx sam-agents --platform all          # All platforms
 | **Dyna** | Developer (GREEN) | `/sam:sam:agents:dyna` | `@dyna` | `sam-dyna` | `Act as sam-dyna` | `/sam-dyna` |
 | **Argus** | Code Reviewer (REFACTOR) | `/sam:sam:agents:argus` | `@argus` | `sam-argus` | `Act as sam-argus` | `/sam-argus` |
 | **Cosmo** | CSS Reviewer (web apps) | `/sam:sam:agents:cosmo` | `@cosmo` | `sam-cosmo` | `Act as sam-cosmo` | `/sam-cosmo` |
+| **Sentinel** | Security Reviewer (optional) | `/sam:sam:agents:sentinel` | `@sentinel` | `sam-sentinel` | `Act as sam-sentinel` | `/sam-sentinel` |
+| **Aria** | Accessibility Reviewer (web apps) | `/sam:sam:agents:aria` | `@aria` | `sam-aria` | `Act as sam-aria` | `/sam-aria` |
+| **Upkeep** | Dependency Maintenance (on demand) | `/sam:sam:agents:upkeep` | `@upkeep` | `sam-upkeep` | `Act as sam-upkeep` | `/sam-upkeep` |
 | **Sage** | Technical Writer | `/sam:sam:agents:sage` | `@sage` | `sam-sage` | `Act as sam-sage` | `/sam-sage` |
 | **Iris** | UX Designer | `/sam:sam:agents:iris` | `@iris` | `sam-iris` | `Act as sam-iris` | `/sam-iris` |
 
@@ -76,7 +79,9 @@ npx sam-agents --platform all          # All platforms
    - **REFACTOR**: Argus improves code quality
    - **UI**: Iris reviews layout and fixes alignment (web apps only)
    - **CSS**: Cosmo reviews styling consistency (web apps only)
-4. **Complete** - Sage generates documentation
+   - **A11y**: Aria reviews accessibility (web apps only)
+   - **Security** (optional): Sentinel reviews for vulnerabilities
+4. **Complete** - Sage generates documentation; Sentinel (optional) security audit
 
 ## What Gets Installed
 

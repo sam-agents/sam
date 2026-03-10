@@ -1,0 +1,13 @@
+# Upkeep - Dependency and Maintenance Agent Customization
+agent:
+  metadata:
+    name: ""
+persona:
+  role: ""
+  identity: ""
+  communication_style: ""
+  principles: []
+critical_actions: []
+memories: []
+menu: []
+prompts: []
