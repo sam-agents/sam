@@ -41,6 +41,21 @@ jobs:
           test -d ./test-output-antigravity/.agent/skills
           echo "Antigravity platform: OK"
 
+      - name: Smoke test - Gemini platform
+        run: |
+          node bin/cli.js --platform gemini ./test-output-gemini
+          test -d ./test-output-gemini/_sam
+          test -d ./test-output-gemini/.gemini/skills
+          echo "Gemini platform: OK"
+
+      - name: Smoke test - Copilot platform
+        run: |
+          node bin/cli.js --platform copilot ./test-output-copilot
+          test -d ./test-output-copilot/_sam
+          test -d ./test-output-copilot/copilot-integration
+          test -f ./test-output-copilot/copilot-integration/instructions.md
+          echo "Copilot platform: OK"
+
       - name: Smoke test - All platforms
         run: |
           node bin/cli.js --platform all ./test-output-all
@@ -48,6 +63,8 @@ jobs:
           test -d ./test-output-all/.claude/commands/sam
           test -d ./test-output-all/.cursor/rules
           test -d ./test-output-all/.agent/skills
+          test -d ./test-output-all/.gemini/skills
+          test -d ./test-output-all/copilot-integration
           echo "All platforms: OK"
 
       - name: Verify templates in sync
