@@ -1,0 +1,57 @@
+name: PR Validation
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate package.json
+        run: node -e "require('./package.json')"
+
+      - name: Validate CLI syntax
+        run: node -c bin/cli.js
+
+      - name: Smoke test - Claude platform
+        run: |
+          node bin/cli.js --platform claude ./test-output
+          test -d ./test-output/_sam
+          test -d ./test-output/.claude/commands/sam
+          echo "Claude platform: OK"
+
+      - name: Smoke test - Cursor platform
+        run: |
+          node bin/cli.js --platform cursor ./test-output-cursor
+          test -d ./test-output-cursor/_sam
+          test -d ./test-output-cursor/.cursor/rules
+          echo "Cursor platform: OK"
+
+      - name: Smoke test - Antigravity platform
+        run: |
+          node bin/cli.js --platform antigravity ./test-output-antigravity
+          test -d ./test-output-antigravity/_sam
+          test -d ./test-output-antigravity/.agent/skills
+          echo "Antigravity platform: OK"
+
+      - name: Smoke test - All platforms
+        run: |
+          node bin/cli.js --platform all ./test-output-all
+          test -d ./test-output-all/_sam
+          test -d ./test-output-all/.claude/commands/sam
+          test -d ./test-output-all/.cursor/rules
+          test -d ./test-output-all/.agent/skills
+          echo "All platforms: OK"
+
+      - name: Verify templates in sync
+        run: node scripts/verify-sync.js
+
+      - name: Verify agent manifest
+        run: node scripts/verify-manifest.js

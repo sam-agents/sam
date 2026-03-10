@@ -16,4 +16,6 @@ Thumbs.db
 # Test output
 test-project/
 test-folder/
+test-output/
+test-output-*/
 /.learn

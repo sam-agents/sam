@@ -105,13 +105,6 @@ Example outputs:
 - [ ] Readable text sizes
 - [ ] Appropriate breakpoints
 
-### Layout & Alignment
-- [ ] Grid items properly aligned (handle partial rows)
-- [ ] Flexbox alignment properties set
-- [ ] Consistent spacing between elements
-- [ ] Visual balance maintained
-- [ ] Content properly centered/aligned based on design intent
-
 ---
 
 ## Severity Levels

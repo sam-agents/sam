@@ -34,5 +34,11 @@
   },
   "engines": {
     "node": ">=16.0.0"
+  },
+  "scripts": {
+    "test": "node scripts/verify-manifest.js && node scripts/verify-sync.js",
+    "verify:sync": "node scripts/verify-sync.js",
+    "verify:manifest": "node scripts/verify-manifest.js",
+    "sync-templates": "node scripts/sync-templates.js"
   }
 }
