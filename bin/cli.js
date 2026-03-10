@@ -64,6 +64,7 @@ function showHelp() {
   log('  Examples:');
   log('    npx sam-agents                         Interactive mode');
   log('    npx sam-agents --platform cursor       Install for Cursor');
+  log('    npx sam-agents --platform antigravity  Install for Antigravity');
   log('    npx sam-agents --platform gemini       Install for Gemini CLI');
   log('    npx sam-agents --platform all          Install for all platforms');
   log('    npx sam-agents ./myapp                 Install in ./myapp directory\n');
@@ -74,56 +75,6 @@ function showHelp() {
   log('    gemini      - Gemini CLI (.gemini/skills/)\n');
 }
 
-function copyDocumentationToReferences(samDir, targetDir, referencesDir, platform) {
-  // Design Standards
-  const designStandardsPath = path.join(samDir, 'core/resources/default-design-standards.md');
-  if (fs.existsSync(designStandardsPath)) {
-    fs.copyFileSync(designStandardsPath, path.join(referencesDir, 'design-standards.md'));
-  }
-
-  // Workflow
-  const workflowPath = path.join(samDir, 'core/workflows/autonomous-tdd/workflow.md');
-  if (fs.existsSync(workflowPath)) {
-    fs.copyFileSync(workflowPath, path.join(referencesDir, 'workflow.md'));
-  }
-
-  // Docs folder
-  const docsSrcDir = path.join(samDir, 'docs');
-  const docsDestDir = path.join(referencesDir, 'docs');
-  if (fs.existsSync(docsSrcDir)) {
-    if (!fs.existsSync(docsDestDir)) {
-      fs.mkdirSync(docsDestDir, { recursive: true });
-    }
-    const docFiles = fs.readdirSync(docsSrcDir);
-    for (const file of docFiles) {
-      if (file.endsWith('.md')) {
-        fs.copyFileSync(path.join(docsSrcDir, file), path.join(docsDestDir, file));
-      }
-    }
-  }
-
-  // Copy all agent definitions to a subfolder for cross-reference
-  const allAgentsDir = path.join(referencesDir, 'agents');
-  if (!fs.existsSync(allAgentsDir)) {
-    fs.mkdirSync(allAgentsDir, { recursive: true });
-  }
-
-  const agentsSrcDir = path.join(samDir, 'agents');
-  if (fs.existsSync(agentsSrcDir)) {
-    const agentFiles = fs.readdirSync(agentsSrcDir);
-    for (const file of agentFiles) {
-      if (file.endsWith('.md')) {
-        fs.copyFileSync(path.join(agentsSrcDir, file), path.join(allAgentsDir, file));
-      }
-    }
-  }
-
-  // Master agent too
-  const masterAgentPath = path.join(samDir, 'core/agents/sam-master.md');
-  if (fs.existsSync(masterAgentPath)) {
-    fs.copyFileSync(masterAgentPath, path.join(allAgentsDir, 'sam-master.md'));
-  }
-}
 
 function generateCursorRules(samDir, targetDir) {
   const cursorDir = path.join(targetDir, '.cursor', 'rules');
@@ -312,7 +263,6 @@ Invoke this skill when you need help with: ${agent.description.toLowerCase()}.
 
 ## Instructions
 Load and follow the detailed agent instructions from the references folder.
-This agent also has access to project documentation, design standards, and other agent definitions in the references folder.
 
 See: references/agent.md for complete agent definition.
 `;
@@ -321,9 +271,6 @@ See: references/agent.md for complete agent definition.
 
       // Copy full agent definition to references
       fs.writeFileSync(path.join(referencesDir, 'agent.md'), content);
-
-      // Copy common documentation references
-      copyDocumentationToReferences(samDir, targetDir, referencesDir, 'antigravity');
 
       skillsCount++;
     }
@@ -336,9 +283,6 @@ See: references/agent.md for complete agent definition.
   if (!fs.existsSync(pipelineRefsDir)) {
     fs.mkdirSync(pipelineRefsDir, { recursive: true });
   }
-
-  // Copy common documentation references for pipeline too
-  copyDocumentationToReferences(samDir, targetDir, pipelineRefsDir, 'antigravity');
 
   const pipelineSkill = `---
 name: sam-tdd-pipeline
@@ -489,7 +433,6 @@ Invoke this skill when you need help with: ${agent.description.toLowerCase()}.
 
 ## Instructions
 Load and follow the detailed agent instructions from the references folder.
-This agent also has access to project documentation, design standards, and other agent definitions in the references folder.
 
 See: references/agent.md for complete agent definition.
 `;
@@ -498,9 +441,6 @@ See: references/agent.md for complete agent definition.
 
       // Copy full agent definition to references
       fs.writeFileSync(path.join(referencesDir, 'agent.md'), content);
-
-      // Copy common documentation references
-      copyDocumentationToReferences(samDir, targetDir, referencesDir, 'gemini');
 
       skillsCount++;
     }
@@ -513,9 +453,6 @@ See: references/agent.md for complete agent definition.
   if (!fs.existsSync(pipelineRefsDir)) {
     fs.mkdirSync(pipelineRefsDir, { recursive: true });
   }
-
-  // Copy common documentation references for pipeline too
-  copyDocumentationToReferences(samDir, targetDir, pipelineRefsDir, 'gemini');
 
   const pipelineSkill = `---
 name: sam-tdd-pipeline
@@ -611,11 +548,11 @@ async function promptPlatform() {
       } else if (choice === '5' || choice.toLowerCase() === 'both' || choice.toLowerCase() === 'all') {
         resolve('all');
       } else if (choice === '') {
-        // Default to gemini (since we're in gemini)
-        resolve('gemini');
+        // Default to claude
+        resolve('claude');
       } else {
-        log('\n  Invalid choice. Defaulting to Gemini CLI.\n', YELLOW);
-        resolve('gemini');
+        log('\n  Invalid choice. Defaulting to Claude Code.\n', YELLOW);
+        resolve('claude');
       }
     });
   });

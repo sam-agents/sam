@@ -16,7 +16,7 @@ let errors = 0;
 
 // Parse manifest
 const manifestContent = fs.readFileSync(manifestPath, 'utf8');
-const lines = manifestContent.trim().split('\n');
+const lines = manifestContent.trim().replace(/\r/g, '').split('\n');
 const rows = lines.slice(1);
 
 const manifestPaths = new Set();
