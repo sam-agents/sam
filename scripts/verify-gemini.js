@@ -49,6 +49,7 @@ function verifyGeminiSkills() {
     'sam-argus',
     'sam-sage',
     'sam-iris',
+    'sam-quill',
     'sam-cosmo',
     'sam-sentinel',
     'sam-aria',
@@ -57,6 +58,7 @@ function verifyGeminiSkills() {
 
   // Verify workflow skills (each has references/workflow.md)
   const expectedWorkflowSkills = [
+    'sam-quick-prd',
     'sam-scope',
     'sam-plan',
     'sam-build-tdd',

@@ -2,10 +2,11 @@ description = "SAM (Smart Agent Manager) - Autonomous TDD Agent System"
 prompt = """
 # SAM - Smart Agent Manager
 
-SAM is an autonomous TDD agent system that transforms an idea or PRD into tested code through four composable workflows.
+SAM is an autonomous TDD agent system that transforms an idea or PRD into tested code through five composable workflows.
 
 ## Workflows
-- **sam-scope**: Idea / notes / nothing -> PRD (interactive discovery via Iris + Atlas)
+- **sam-quick-prd**: Idea -> draft PRD in one pass (Quill, with explicit assumptions for unstated details)
+- **sam-scope**: Idea / notes / nothing -> PRD via full discovery (Iris + Atlas + Sage)
 - **sam-plan**: PRD -> validated epics and stories (no code)
 - **sam-build-tdd**: One story -> tested, reviewed code (RED-GREEN-REFACTOR)
 - **sam-plan-n-build**: End-to-end composer (plan + tdd for every story + comprehensive docs); pass --from-idea to prepend scope
@@ -17,6 +18,7 @@ SAM is an autonomous TDD agent system that transforms an idea or PRD into tested
 - **sam-dyna**: Developer (GREEN phase - make tests pass)
 - **sam-argus**: Code Reviewer (REFACTOR phase)
 - **sam-iris**: UX Designer (UX validation, web apps)
+- **sam-quill**: Product Manager (one-pass PRD drafting)
 - **sam-cosmo**: CSS Consistency Reviewer (web apps only)
 - **sam-aria**: Accessibility Reviewer (web apps only)
 - **sam-sentinel**: Security Reviewer (opt-in)
@@ -25,6 +27,7 @@ SAM is an autonomous TDD agent system that transforms an idea or PRD into tested
 
 ## Usage
 Invoke a workflow with the path to your idea, PRD, or story:
+> "Run sam-quick-prd 'build a TODO app'"
 > "Run sam-scope to draft a PRD for [idea]"
 > "Run sam-plan-n-build with prd.md"
 > "Run sam-plan-n-build --from-idea 'build a TODO app'"

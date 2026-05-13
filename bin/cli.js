@@ -16,6 +16,12 @@ const PLATFORMS = ['claude', 'cursor', 'antigravity', 'gemini', 'copilot', 'all'
 
 const WORKFLOWS = [
   {
+    name: 'quick-prd',
+    file: 'core/workflows/quick-prd/workflow.md',
+    display: 'SAM Quick PRD Workflow',
+    description: 'Quill drafts a valid PRD in one pass, making explicit assumptions where the user is silent.'
+  },
+  {
     name: 'scope',
     file: 'core/workflows/scope/workflow.md',
     display: 'SAM Scope Workflow',
@@ -120,6 +126,7 @@ function generateCursorRules(samDir, targetDir) {
     { name: 'argus', file: 'agents/reviewer.md', display: 'Argus - Code Reviewer' },
     { name: 'sage', file: 'agents/tech-writer.md', display: 'Sage - Technical Writer' },
     { name: 'iris', file: 'agents/ux-designer.md', display: 'Iris - UX Designer' },
+    { name: 'quill', file: 'agents/product-manager.md', display: 'Quill - Product Manager' },
     { name: 'cosmo', file: 'agents/css-reviewer.md', display: 'Cosmo - CSS Consistency Reviewer' },
     { name: 'sentinel', file: 'agents/security-reviewer.md', display: 'Sentinel - Security Reviewer' },
     { name: 'aria', file: 'agents/accessibility-reviewer.md', display: 'Aria - Accessibility Reviewer' },
@@ -231,6 +238,18 @@ function generateAntigravitySkills(samDir, targetDir) {
       file: 'agents/ux-designer.md',
       display: 'Iris - UX Designer',
       description: 'UX validation, user experience review, interface design feedback'
+    },
+    {
+      name: 'sam-quill',
+      file: 'agents/product-manager.md',
+      display: 'Quill - Product Manager',
+      description: 'Draft a PRD in one pass with explicit assumptions for unstated details, fast on-ramp before scope or plan'
+    },
+    {
+      name: 'sam-quill',
+      file: 'agents/product-manager.md',
+      display: 'Quill - Product Manager',
+      description: 'Quick PRD authoring; one-pass PRD drafting with explicit assumptions where input is thin'
     },
     {
       name: 'sam-cosmo',
@@ -390,6 +409,18 @@ function generateGeminiSkills(samDir, targetDir) {
       description: 'UX validation, user experience review, interface design feedback'
     },
     {
+      name: 'sam-quill',
+      file: 'agents/product-manager.md',
+      display: 'Quill - Product Manager',
+      description: 'Draft a PRD in one pass with explicit assumptions for unstated details, fast on-ramp before scope or plan'
+    },
+    {
+      name: 'sam-quill',
+      file: 'agents/product-manager.md',
+      display: 'Quill - Product Manager',
+      description: 'Quick PRD authoring; one-pass PRD drafting with explicit assumptions where input is thin'
+    },
+    {
       name: 'sam-cosmo',
       file: 'agents/css-reviewer.md',
       display: 'Cosmo - CSS Consistency Reviewer',
@@ -546,6 +577,18 @@ function generateCopilotSkills(samDir, targetDir) {
       file: 'agents/ux-designer.md',
       display: 'Iris - UX Designer',
       description: 'UX validation, user experience review, interface design feedback'
+    },
+    {
+      name: 'sam-quill',
+      file: 'agents/product-manager.md',
+      display: 'Quill - Product Manager',
+      description: 'Draft a PRD in one pass with explicit assumptions for unstated details, fast on-ramp before scope or plan'
+    },
+    {
+      name: 'sam-quill',
+      file: 'agents/product-manager.md',
+      display: 'Quill - Product Manager',
+      description: 'Quick PRD authoring; one-pass PRD drafting with explicit assumptions where input is thin'
     },
     {
       name: 'sam-cosmo',
@@ -758,7 +801,9 @@ function install(platform, targetDir) {
     log('    /sam:sam:agents:upkeep             - Upkeep (Dependency and Maintenance)');
     log('    /sam:sam:agents:sage               - Sage (Tech Writer)');
     log('    /sam:sam:agents:iris               - Iris (UX Designer)');
-    log('    /sam:core:workflows:scope          - Idea -> PRD');
+    log('    /sam:sam:agents:quill              - Quill (Product Manager)');
+    log('    /sam:core:workflows:quick-prd      - Idea -> Quick PRD (one pass, explicit assumptions)');
+    log('    /sam:core:workflows:scope          - Idea -> PRD (full discovery)');
     log('    /sam:core:workflows:plan           - PRD -> epics + stories');
     log('    /sam:core:workflows:build-tdd      - One story -> tested code');
     log('    /sam:core:workflows:plan-n-build   - Full pipeline (plan + tdd + docs)\n');
@@ -777,7 +822,9 @@ function install(platform, targetDir) {
     log('    @upkeep            - Upkeep (Dependency and Maintenance)');
     log('    @sage              - Sage (Tech Writer)');
     log('    @iris              - Iris (UX Designer)');
-    log('    @sam-scope         - Idea -> PRD');
+    log('    @quill             - Quill (Product Manager)');
+    log('    @sam-quick-prd     - Idea -> Quick PRD (one pass, explicit assumptions)');
+    log('    @sam-scope         - Idea -> PRD (full discovery)');
     log('    @sam-plan          - PRD -> epics + stories');
     log('    @sam-build-tdd     - One story -> tested code');
     log('    @sam-plan-n-build  - Full pipeline (plan + tdd + docs)\n');
@@ -796,7 +843,9 @@ function install(platform, targetDir) {
     log('    /sam-upkeep         - Upkeep (Dependency and Maintenance)');
     log('    /sam-sage           - Sage (Tech Writer)');
     log('    /sam-iris           - Iris (UX Designer)');
-    log('    /sam-scope          - Idea -> PRD');
+    log('    /sam-quill          - Quill (Product Manager)');
+    log('    /sam-quick-prd      - Idea -> Quick PRD (one pass, explicit assumptions)');
+    log('    /sam-scope          - Idea -> PRD (full discovery)');
     log('    /sam-plan           - PRD -> epics + stories');
     log('    /sam-build-tdd      - One story -> tested code');
     log('    /sam-plan-n-build   - Full pipeline (plan + tdd + docs)\n');
@@ -815,7 +864,9 @@ function install(platform, targetDir) {
     log('    sam-upkeep         - Upkeep (Dependency and Maintenance)');
     log('    sam-sage           - Sage (Tech Writer)');
     log('    sam-iris           - Iris (UX Designer)');
-    log('    sam-scope          - Idea -> PRD');
+    log('    sam-quill          - Quill (Product Manager)');
+    log('    sam-quick-prd      - Idea -> Quick PRD (one pass, explicit assumptions)');
+    log('    sam-scope          - Idea -> PRD (full discovery)');
     log('    sam-plan           - PRD -> epics + stories');
     log('    sam-build-tdd      - One story -> tested code');
     log('    sam-plan-n-build   - Full pipeline (plan + tdd + docs)\n');
@@ -834,7 +885,9 @@ function install(platform, targetDir) {
     log('    "Act as sam-upkeep"       - Upkeep (Dependency and Maintenance)');
     log('    "Act as sam-sage"         - Sage (Tech Writer)');
     log('    "Act as sam-iris"         - Iris (UX Designer)');
-    log('    "Run sam-scope"           - Idea -> PRD');
+    log('    "Act as sam-quill"        - Quill (Product Manager)');
+    log('    "Run sam-quick-prd"       - Idea -> Quick PRD (one pass, explicit assumptions)');
+    log('    "Run sam-scope"           - Idea -> PRD (full discovery)');
     log('    "Run sam-plan"            - PRD -> epics + stories');
     log('    "Run sam-build-tdd"       - One story -> tested code');
     log('    "Run sam-plan-n-build"    - Full pipeline (plan + tdd + docs)\n');

@@ -6,7 +6,7 @@
 
 **Autonomous TDD agent system for Claude Code, Cursor, Gemini CLI, GitHub Copilot, and Antigravity.**
 
-SAM orchestrates a team of specialized AI agents that transform an idea or PRD into working, tested code using strict Test-Driven Development (RED-GREEN-REFACTOR). Don't have a PRD yet? Start with `scope` — SAM will help you draft one.
+SAM orchestrates a team of specialized AI agents that transform an idea or PRD into working, tested code using strict Test-Driven Development (RED-GREEN-REFACTOR). Don't have a PRD yet? Start with `quick-prd` (one-pass draft) or `scope` (full discovery) — SAM will help you draft one.
 
 ## Quick Start
 
@@ -58,33 +58,44 @@ npx sam-agents --platform all          # All platforms
 | **Upkeep** | Dependency Maintenance (on demand) | `/sam:sam:agents:upkeep` | `@upkeep` | `sam-upkeep` | `Act as sam-upkeep` | `/sam-upkeep` |
 | **Sage** | Technical Writer | `/sam:sam:agents:sage` | `@sage` | `sam-sage` | `Act as sam-sage` | `/sam-sage` |
 | **Iris** | UX Designer | `/sam:sam:agents:iris` | `@iris` | `sam-iris` | `Act as sam-iris` | `/sam-iris` |
+| **Quill** | Product Manager | `/sam:sam:agents:quill` | `@quill` | `sam-quill` | `Act as sam-quill` | `/sam-quill` |
 
 ## Workflows
 
-SAM ships four composable workflows. Run any of them on its own, or use `plan-n-build` for the one-shot experience (add `--from-idea` if you don't have a PRD yet).
+SAM ships five composable workflows. Run any of them on its own, or use `plan-n-build` for the one-shot experience (add `--from-idea` if you don't have a PRD yet).
 
 | Workflow | Goal | Output |
 |----------|------|--------|
-| **scope** | Idea, rough notes, or nothing → a draft PRD you can iterate on | `sdocs/prd.md` |
+| **quick-prd** | Idea → draft PRD in one pass (Quill, with explicit assumptions for unstated details) | `sdocs/prd.md` (+ `## Assumptions`) |
+| **scope** | Idea, rough notes, or nothing → PRD via full UX + technical discovery | `sdocs/prd.md` (+ `## Open Questions`) |
 | **plan** | Validate a PRD and decompose it into epics and stories | `sdocs/epics/`, `sdocs/stories/`, `sdocs/architecture-ref.md` |
 | **build-tdd** | Implement a single story via RED-GREEN-REFACTOR + conditional review | Working code, tests, changelog entry |
 | **plan-n-build** | Compose plan + build-tdd over every story + comprehensive docs | Full project + `docs/features/` + release notes |
 
-Typical flow: **scope → plan → build-tdd** (manual stepping), or **`plan-n-build`** end-to-end. With `--from-idea`, plan-n-build prepends scope automatically (non-interactive).
+Typical flow: **quick-prd or scope → plan → build-tdd** (manual stepping), or **`plan-n-build`** end-to-end. With `--from-idea`, plan-n-build prepends scope automatically (non-interactive).
+
+### quick-prd vs scope
+
+Both produce a valid PRD conforming to `prd-schema.md`. They differ in how they handle unknowns.
+
+| | `quick-prd` (Quill) | `scope` (Iris + Atlas + Sage) |
+|--|---------------------|-------------------------------|
+| Discovery depth | 0–5 focused questions | Full UX + technical Q&A |
+| Unknown handling | Default + label as **Assumption** | Capture as **Open Question** |
+| Time | Minutes | Working session |
+| Best for | "Give me a starting PRD I can react to" | "Let's work this out properly" |
+
+Quick-PRD's `## Assumptions` block lets you scan the defaults and reject any that are wrong in seconds. Scope's `## Open Questions` block surfaces things the discovery loop couldn't resolve.
 
 ### Invocation per platform
 
-| Platform | scope | plan | build-tdd | plan-n-build |
-|----------|-------|------|-----------|--------------|
-| Claude Code | `/sam:core:workflows:scope <idea>` | `/sam:core:workflows:plan <prd>` | `/sam:core:workflows:build-tdd <story>` | `/sam:core:workflows:plan-n-build <prd>` |
-| Cursor | `@sam-scope` | `@sam-plan` | `@sam-build-tdd` | `@sam-plan-n-build` |
-| Gemini CLI | `sam-scope` | `sam-plan` | `sam-build-tdd` | `sam-plan-n-build` |
-| GitHub Copilot | `Run sam-scope` | `Run sam-plan` | `Run sam-build-tdd` | `Run sam-plan-n-build` |
-| Antigravity | `/sam-scope` | `/sam-plan` | `/sam-build-tdd` | `/sam-plan-n-build` |
-
-### Inside `scope`: idea → PRD
-
-`scope` accepts prose, a notes file, or nothing at all. SAM orchestrates Iris (UX questions) and Atlas (technical questions) to fill gaps, then Sage drafts a PRD conforming to [`prd-schema.md`](_sam/core/resources/prd-schema.md). Always produces a draft on the first pass — even thin sections become honest "TBD" notes plus Open Questions you can iterate on.
+| Platform | quick-prd | scope | plan | build-tdd | plan-n-build |
+|----------|-----------|-------|------|-----------|--------------|
+| Claude Code | `/sam:core:workflows:quick-prd <idea>` | `/sam:core:workflows:scope <idea>` | `/sam:core:workflows:plan <prd>` | `/sam:core:workflows:build-tdd <story>` | `/sam:core:workflows:plan-n-build <prd>` |
+| Cursor | `@sam-quick-prd` | `@sam-scope` | `@sam-plan` | `@sam-build-tdd` | `@sam-plan-n-build` |
+| Gemini CLI | `sam-quick-prd` | `sam-scope` | `sam-plan` | `sam-build-tdd` | `sam-plan-n-build` |
+| GitHub Copilot | `Run sam-quick-prd` | `Run sam-scope` | `Run sam-plan` | `Run sam-build-tdd` | `Run sam-plan-n-build` |
+| Antigravity | `/sam-quick-prd` | `/sam-scope` | `/sam-plan` | `/sam-build-tdd` | `/sam-plan-n-build` |
 
 ### Inside `build-tdd`: the TDD loop
 
@@ -109,7 +120,7 @@ your-project/
 │   ├── agents/                # Atlas, Titan, Dyna, Argus, ...
 │   ├── core/agents/           # SAM orchestrator
 │   ├── core/resources/        # prd-schema, story-schema, epic-schema, design defaults
-│   └── core/workflows/        # scope/, plan/, build-tdd/, plan-n-build/
+│   └── core/workflows/        # quick-prd/, scope/, plan/, build-tdd/, plan-n-build/
 ├── .claude/commands/sam/      # Claude Code slash commands
 ├── .cursor/rules/             # Cursor @mention rules
 ├── .gemini/skills/            # Gemini CLI skills
