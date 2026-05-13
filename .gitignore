@@ -19,3 +19,7 @@ test-folder/
 test-output/
 test-output-*/
 /.learn
+/.test
+
+# Claude Code local config (machine-specific permissions, etc.)
+/.claude/
