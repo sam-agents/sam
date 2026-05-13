@@ -1,0 +1,198 @@
+SAM Autonomous TDD Pipeline — Issues Found During ALOS Phase 1 Run
+===================================================================
+Run ID: 2026-03-15T00-00-00Z
+PRD: bdocs/planning-artifacts/prd-phase1-agent-workspace.md
+Stories completed: 8 of 14
+
+---
+
+ISSUE 1: Missing index.html and main.jsx for Vite React app
+Severity: High
+Story: epic-1-story-1 (Project scaffolding)
+
+The scaffolding story created client/src/App.jsx, client/package.json, and
+client/vite.config.js — but did NOT create client/index.html (Vite's entry
+point) or client/src/main.jsx (React DOM mount point). Without these, the
+app cannot render in a browser at all.
+
+The tests only checked for file existence (package.json, vite.config.js,
+App.jsx) and module exports, but never verified the app actually boots in
+a browser.
+
+Recommendation:
+- Scaffolding stories should always create the full minimum viable set of
+  files needed to boot the app (index.html, main entry point, etc.)
+- Add a test that verifies the Vite build succeeds (`npx vite build`)
+- Consider an E2E smoke test that the app renders without errors
+
+---
+
+ISSUE 2: BrowserRouter and AuthProvider not wired in app entry point
+Severity: High
+Story: epic-2-story-2 (Login page UI)
+
+App.jsx uses <Routes> from react-router-dom and useAuth() hook, but neither
+<BrowserRouter> nor <AuthProvider> were added to wrap the app. Tests passed
+because each test individually wraps components in <MemoryRouter> and
+<AuthProvider>, masking the fact that the real app would crash on load.
+
+Error in browser: "useRoutes() may be used only in the context of a
+<Router> component"
+
+Recommendation:
+- When a story adds routing or context providers, the GREEN phase should
+  also update the app entry point (main.jsx) to include those providers
+- Add an integration test that renders the full <App /> component (not just
+  individual pages) to catch missing providers
+- SAM should distinguish between "tests pass in isolation" vs "app works
+  end-to-end"
+
+---
+
+ISSUE 3: dotenv loads .env from wrong directory in monorepo
+Severity: Medium
+Story: epic-1-story-1 / epic-2-story-1
+
+server/src/server.js used `import 'dotenv/config'` which loads .env from
+the current working directory. In a monorepo where the server runs from
+server/ but .env is at the project root, the env vars are never loaded.
+
+Server logged: "MONGODB_URI not set — skipping MongoDB connection" even
+though .env had the correct value.
+
+Fix: Changed to explicit path resolution:
+  dotenv.config({ path: join(__dirname, '../../.env') })
+
+Recommendation:
+- For monorepo projects, SAM should configure dotenv with an explicit path
+  relative to the project root, not rely on CWD
+- The architecture-ref.md should specify where .env lives and how it's loaded
+- Add a test that verifies env vars are loaded correctly from the root .env
+
+---
+
+ISSUE 4: Tests don't catch real-world integration issues
+Severity: Medium
+Affected: All stories
+
+The TDD approach writes unit/acceptance tests that mock dependencies, which
+is correct for TDD. But several issues only surfaced when trying to run the
+actual app in a browser:
+- Missing files (index.html, main.jsx)
+- Missing context providers (BrowserRouter, AuthProvider)
+- dotenv path resolution
+
+These are integration-level issues that unit tests cannot catch by design.
+
+Recommendation:
+- After completing all stories (or after each epic), SAM should run a
+  "smoke test" phase that:
+  1. Builds the client (`npx vite build`)
+  2. Starts the server
+  3. Optionally runs a basic Playwright E2E test (page loads, no console errors)
+- This catches the gap between "all unit tests pass" and "the app works"
+
+---
+
+ISSUE 5: Test suite fragility across stories
+Severity: Medium
+Affected: epic-3-story-1, epic-4-story-1, epic-5-story-1
+
+When epic-5-story-1 replaced the placeholder ChatPanel with the real
+component (which uses IntersectionObserver), all epic-3 tests broke because
+they rendered WorkspacePage without the IntersectionObserver mock.
+
+This was fixed by adding global mocks in the test setup file, but the
+breakage pattern suggests SAM should:
+- When modifying a component used by earlier tests, re-run ALL tests
+  immediately and fix regressions before proceeding
+- Tests for layout stories (epic-3) should mock child components rather
+  than rendering real implementations, so they don't break when children change
+- Consider a shared test setup file from the start (not added retroactively)
+
+Recommendation:
+- In the GREEN phase, ALWAYS run the full test suite (not just the current
+  story's tests) before declaring success
+- The REFACTOR phase reviewer confirmed "no regression" in some cases where
+  regressions existed — the reviewer should independently run full suite
+
+---
+
+ISSUE 6: Seed scripts not automatically run
+Severity: Low
+Story: epic-1-story-2, epic-2-story-1
+
+Seed scripts (seed-users.js, seed-catalog.js) were created but the developer
+has to know to run them manually. There's no documentation generated during
+the pipeline about how to set up and run the app.
+
+Recommendation:
+- SAM Phase 4 (completion) should generate a README or GETTING_STARTED.md
+  with setup instructions including: install deps, create .env, run seeds,
+  start dev server
+- Consider a single `npm run setup` script that runs all seeds
+
+---
+
+ISSUE 7: No CORS configuration
+Severity: Medium
+Story: epic-1-story-1
+
+The Fastify server has no CORS configuration. The React client on port 5173
+makes API calls to the server on port 3100. Without @fastify/cors, all API
+calls from the browser will fail with CORS errors.
+
+The .env.example includes CORS_ORIGIN=http://localhost:5173 but the server
+never reads or uses it.
+
+Recommendation:
+- Scaffolding story should include CORS setup when client and server are on
+  different ports
+- Add @fastify/cors registration in server.js using CORS_ORIGIN from env
+- The architecture-ref.md mentions CORS_ORIGIN but SAM didn't act on it
+
+---
+
+ISSUE 8: SAM does not update status files after each story
+Severity: Medium
+Affected: All stories
+
+The SAM workflow specifies that pipeline-status.yaml should be updated after
+each TDD phase (RED → status: "red", GREEN → status: "green", REFACTOR →
+status: "done") and that individual story files should have their status
+updated from "pending" to "done".
+
+In practice, SAM never updated:
+- pipeline-status.yaml (story statuses remained "pending" throughout)
+- Individual story .md files (status in frontmatter stayed "pending")
+- current_story field in pipeline-status.yaml
+
+All status updates had to be done manually by the orchestrator (me) in a
+batch after multiple stories were completed. This defeats the purpose of
+state tracking — if the pipeline is interrupted mid-run, there's no way to
+know which stories were completed.
+
+Recommendation:
+- After each TDD phase completes (RED, GREEN, REFACTOR), SAM should
+  immediately update pipeline-status.yaml with the story's current status,
+  test counts, and retry counts
+- After a story reaches "done", update the story .md file's frontmatter
+  status from "pending" to "done"
+- Update current_story in pipeline-status.yaml before starting each story
+- This should be enforced as a mandatory step in the TDD loop, not optional
+
+---
+
+SUMMARY
+=======
+Most issues fall into a single category: SAM's TDD approach produces code
+that passes unit tests but may not work as a complete application. The gap
+between "all tests green" and "app runs in browser" needs a dedicated
+verification step.
+
+Top priorities for SAM improvement:
+1. Add a post-story or post-epic smoke test (build + boot + no errors)
+2. Ensure scaffolding stories create ALL files needed to boot the app
+3. When adding providers/routers, update the real entry point, not just tests
+4. Handle monorepo dotenv paths explicitly
+5. Run full test suite in GREEN phase, not just current story tests
