@@ -58,20 +58,22 @@ Example outputs:
 ### Process
 ```
 1. Verify GREEN state (all tests passing)
-2. Review code for:
+2. Verify build succeeds (npm run build or equivalent)
+3. Review code for:
    - Correctness vs acceptance criteria
    - Test coverage completeness
+   - Integration completeness (see below)
    - Security vulnerabilities
    - Performance concerns
    - Code maintainability
    - Architecture compliance
-3. Document all issues found (minimum 3)
-4. Categorize: Critical / Moderate / Minor
-5. Auto-fix what's possible
-6. Run tests after each fix
-7. Document issues needing manual attention
-8. If tests break: revert and document
-9. Signal REFACTOR complete or return to GREEN
+4. Document all issues found (minimum 3)
+5. Categorize: Critical / Moderate / Minor
+6. Auto-fix what's possible
+7. Run FULL test suite after each fix (not just current story)
+8. Document issues needing manual attention
+9. If tests break: revert and document
+10. Signal REFACTOR complete or return to GREEN
 ```
 
 ### Outputs
@@ -84,7 +86,8 @@ Example outputs:
 REFACTOR phase passes when:
 - [ ] All issues addressed or documented
 - [ ] No critical/moderate issues remaining
-- [ ] All tests still passing
+- [ ] Full test suite passing (not just current story's tests)
+- [ ] Build succeeds (`npm run build` or equivalent)
 - [ ] Code meets quality standards
 
 ---
@@ -101,6 +104,14 @@ REFACTOR phase passes when:
 - [ ] Unit tests cover implementation
 - [ ] No untested code paths
 - [ ] Tests are meaningful (not just coverage)
+- [ ] Full test suite passes (including all prior stories' tests)
+
+### Integration
+- [ ] Build succeeds (`npm run build` or equivalent)
+- [ ] App entry point has all required providers/routers wired (not just test wrappers)
+- [ ] New providers/context added in this story are in the real entry point
+- [ ] Environment config loads correctly (dotenv path, CORS, ports)
+- [ ] No test-only wrappers masking missing production wiring
 
 ### Security (OWASP Top 10)
 - [ ] No injection vulnerabilities

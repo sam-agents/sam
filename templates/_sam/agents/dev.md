@@ -62,22 +62,43 @@ Example outputs:
 3. Implement minimum code to pass tests
 4. Run tests - iterate until GREEN
 5. Add unit tests for implementation details
-6. Verify all tests (acceptance + unit) pass
-7. Mark task complete
-8. Move to next task or signal story complete
+6. Verify ALL tests pass (acceptance + unit + full suite)
+7. Run build verification (see below)
+8. Mark task complete
+9. Move to next task or signal story complete
 ```
+
+### Build Verification (Step 7)
+
+After all tests pass, verify the app actually builds and boots — not just that tests pass in isolation. This catches missing files, unwired providers, broken imports, and configuration issues that unit tests mask.
+
+**Required checks:**
+1. **Build check:** Run the project's build command (e.g., `npm run build`, `npx vite build`). If it fails, the GREEN phase is NOT complete — fix the build before proceeding.
+2. **Full test suite:** Run ALL project tests, not just the current story's tests. If earlier stories' tests break, fix the regression before proceeding.
+
+**For scaffolding stories (first story of a project):**
+3. **Boot check:** Verify the app starts without crashing (server starts, client renders). This ensures the bootable app checklist from architecture-ref.md is satisfied.
+4. **Entry point wiring:** Confirm that all providers, routers, and context wrappers specified in the architecture are present in the actual app entry point (e.g., `main.jsx`), not just in test wrappers.
+
+**For stories that add providers, routers, or context:**
+5. **Entry point update:** When adding a new provider (AuthProvider, Router, ThemeProvider, etc.), update the real app entry point — not just test wrappers. Tests that wrap components in `<MemoryRouter>` or `<AuthProvider>` will pass even when the real app is missing these wrappers.
+
+**For monorepo projects:**
+6. **Environment check:** Verify that dotenv/config loads from the correct path relative to the project root, not from CWD.
 
 ### Outputs
 - Implementation code
 - Unit tests
+- Build verification results
 - Updated task status
 
 ### Gate Criteria
 GREEN phase passes when:
 - [ ] All acceptance tests pass
 - [ ] All unit tests pass
-- [ ] No regression in existing tests
-- [ ] Code compiles/builds successfully
+- [ ] No regression in existing tests (full suite run)
+- [ ] Build succeeds (`npm run build` or equivalent)
+- [ ] App entry point has all required providers wired (not just test files)
 
 ---
 

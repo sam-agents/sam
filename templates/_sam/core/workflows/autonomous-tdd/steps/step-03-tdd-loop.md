@@ -177,8 +177,18 @@ green_phase:
       coverage: "Test internal logic not covered by AC tests"
 
     6_verify_all_green:
-      action: "Run full test suite"
+      action: "Run FULL test suite (all stories, not just current)"
       required: "ALL tests pass (AC + unit + existing)"
+
+    7_verify_build:
+      action: "Run build command (npm run build / npx vite build)"
+      required: "Build must succeed — missing files, broken imports, and unwired providers will fail here even when unit tests pass"
+      if_build_fails: "Fix the build issue before proceeding"
+
+    8_verify_entry_point:
+      condition: "If story adds providers, routers, or context wrappers"
+      action: "Verify the real app entry point (e.g., main.jsx) includes the new provider — not just test wrappers"
+      why: "Tests wrap components in MemoryRouter/AuthProvider individually, masking the fact that the real app entry point is missing them"
 ```
 
 **Implementation Loop:**
@@ -214,8 +224,9 @@ green_phase_gate:
   required:
     - all_acceptance_tests_pass: true
     - all_unit_tests_pass: true
-    - no_regression: true  # Existing tests still pass
-    - code_compiles: true
+    - no_regression: true  # FULL suite — all prior stories' tests still pass
+    - build_succeeds: true  # npm run build / npx vite build must pass
+    - entry_point_wired: true  # Providers/routers in real entry point, not just test wrappers
 
   on_pass:
     update_status: "green"
@@ -266,14 +277,18 @@ refactor_phase:
 
     4_auto_fix:
       action: "Fix issues where possible"
-      after_each_fix: "Run tests"
+      after_each_fix: "Run FULL test suite"
       if_tests_break: "Revert fix"
 
     5_verify_green:
-      action: "Confirm all tests still passing"
+      action: "Run FULL test suite (all stories) and build command"
       required: true
 
-    6_document_remaining:
+    6_verify_integration:
+      action: "Confirm app entry point has all providers/routers wired"
+      check: "Real entry point (main.jsx/main.tsx) — not test wrappers"
+
+    7_document_remaining:
       action: "Document issues needing manual attention"
       if_critical_remain: "Loop back to GREEN"
 ```
@@ -317,7 +332,8 @@ refactor_phase_gate:
     - review_completed: true
     - no_critical_issues: true
     - no_moderate_issues: true  # All fixed
-    - all_tests_passing: true
+    - all_tests_passing: true  # FULL suite, not just current story
+    - build_succeeds: true  # Build verified after refactoring
 
   on_pass:
     update_status: "done"
