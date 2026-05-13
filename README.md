@@ -59,43 +59,58 @@ npx sam-agents --platform all          # All platforms
 | **Sage** | Technical Writer | `/sam:sam:agents:sage` | `@sage` | `sam-sage` | `Act as sam-sage` | `/sam-sage` |
 | **Iris** | UX Designer | `/sam:sam:agents:iris` | `@iris` | `sam-iris` | `Act as sam-iris` | `/sam-iris` |
 
-## The TDD Pipeline
+## Workflows
 
-| Platform | Command |
-|----------|---------|
-| Claude Code | `/sam:core:workflows:autonomous-tdd` |
-| Cursor | `@sam-tdd` |
-| Gemini CLI | `sam-tdd-pipeline` |
-| GitHub Copilot | `Run SAM TDD pipeline` |
-| Antigravity | `/sam-tdd-pipeline` |
+SAM ships three composable workflows. Use them individually, or run `plan-n-build` for the one-shot PRD → working code experience.
 
-### Pipeline Phases
+| Workflow | Goal | Output |
+|----------|------|--------|
+| **plan** | Validate a PRD and decompose it into epics and stories | `sdocs/epics/`, `sdocs/stories/`, `sdocs/architecture-ref.md` |
+| **build-tdd** | Implement a single story via RED-GREEN-REFACTOR + conditional review | Working code, tests, changelog entry |
+| **plan-n-build** | Compose plan + build-tdd over every story + comprehensive docs | Full project + `docs/features/` + release notes |
 
-1. **Validate PRD** - Atlas + Iris review requirements
-2. **Generate Stories** - Break down into epics and user stories
-3. **TDD Loop** - For each story:
-   - **RED**: Titan writes failing tests
-   - **GREEN**: Dyna writes minimal code to pass
-   - **REFACTOR**: Argus improves code quality
-   - **UI**: Iris reviews layout and fixes alignment (web apps only)
-   - **CSS**: Cosmo reviews styling consistency (web apps only)
-   - **A11y**: Aria reviews accessibility (web apps only)
-   - **Security** (optional): Sentinel reviews for vulnerabilities
-4. **Complete** - Sage generates documentation; Sentinel (optional) security audit
+### Invocation per platform
+
+| Platform | plan | build-tdd | plan-n-build |
+|----------|------|-----------|--------------|
+| Claude Code | `/sam:core:workflows:plan <prd>` | `/sam:core:workflows:build-tdd <story>` | `/sam:core:workflows:plan-n-build <prd>` |
+| Cursor | `@sam-plan` | `@sam-build-tdd` | `@sam-plan-n-build` |
+| Gemini CLI | `sam-plan` | `sam-build-tdd` | `sam-plan-n-build` |
+| GitHub Copilot | `Run sam-plan` | `Run sam-build-tdd` | `Run sam-plan-n-build` |
+| Antigravity | `/sam-plan` | `/sam-build-tdd` | `/sam-plan-n-build` |
+
+### Inside `build-tdd`: the TDD loop
+
+For each story, in order:
+
+1. **RED** — Titan writes failing tests covering every acceptance criterion
+2. **GREEN** — Dyna writes the minimum code to make tests pass, then verifies the build
+3. **REFACTOR** — Argus runs an adversarial review and auto-fixes issues
+4. **UI** — Iris validates UX against design standards *(web apps only)*
+5. **CSS** — Cosmo checks styling consistency *(web apps only)*
+6. **A11y** — Aria reviews semantics, keyboard, and contrast *(web apps only)*
+7. **Security** — Sentinel audits secrets, CVEs, and secure coding *(opt-in via `--security`)*
+8. **Docs** — Sage appends a changelog entry for the story
+
+Story `status` (in YAML frontmatter: `ready` → `in-progress` → `done` / `blocked`) is the single source of truth. Interrupted runs resume cleanly with `plan-n-build --resume`.
 
 ## What Gets Installed
 
 ```
 your-project/
-├── _sam/                      # Agent definitions (shared)
-│   ├── agents/                # Individual agent configs
-│   └── core/workflows/        # TDD pipeline workflow
-├── .claude/commands/sam/      # Claude Code skills
-├── .cursor/rules/             # Cursor rules
-├── .gemini/skills/             # Gemini CLI skills
+├── _sam/                      # Agent and workflow definitions (shared across platforms)
+│   ├── agents/                # Atlas, Titan, Dyna, Argus, ...
+│   ├── core/agents/           # SAM orchestrator
+│   ├── core/resources/        # story-schema, epic-schema, design defaults
+│   └── core/workflows/        # plan/, build-tdd/, plan-n-build/
+├── .claude/commands/sam/      # Claude Code slash commands
+├── .cursor/rules/             # Cursor @mention rules
+├── .gemini/skills/            # Gemini CLI skills
 ├── copilot-integration/       # GitHub Copilot instructions
 └── .agent/skills/             # Antigravity skills
 ```
+
+Workflows write their output to `sdocs/` in your project root (epics, stories, architecture refs, run reports). This is generated content — not installed by the CLI.
 
 ## Requirements
 
