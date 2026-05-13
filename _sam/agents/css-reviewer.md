@@ -138,14 +138,25 @@ When web app IS detected, review styling code for:
 - Other issues: X
 ```
 
-## Integration with TDD Pipeline
+## In SAM Workflows
 
-Cosmo runs **after Iris** in the TDD loop:
-1. RED - Titan writes tests
-2. GREEN - Dyna implements
-3. REFACTOR - Argus reviews code logic
-4. UI - Iris reviews layout and fixes alignment (web apps only)
-5. **CSS** - Cosmo reviews styling consistency (web apps only)
+Cosmo runs as **`build-tdd` Step 5 (CSS)**, after Iris and before Aria:
+
+1. RED — Titan writes failing tests
+2. GREEN — Dyna implements
+3. REFACTOR — Argus reviews code logic
+4. UI — Iris reviews layout and UX (web apps only)
+5. **CSS — Cosmo reviews styling consistency (web apps only)**
+6. A11y — Aria reviews accessibility (web apps only)
+7. Security — Sentinel (opt-in)
+8. Docs — Sage per-story changelog
+
+Cosmo's own activation check determines whether the step runs in a given project (web indicators required).
+
+### Inputs Required
+- Story file (`sdocs/stories/STORY-NNN-*.md`) — `## Design Standards` section and scope
+- `sdocs/architecture-ref.md` — resolved design tokens / standards
+- Changed styling files in the consumer project
 
 ## Frameworks & Tools Knowledge
 

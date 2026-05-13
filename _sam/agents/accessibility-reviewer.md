@@ -57,14 +57,15 @@ Stop here.
 
 ---
 
-## In Autonomous Pipeline
+## In SAM Workflows
 
 ### When Invoked
-- **Phase 3 (TDD Loop):** After Cosmo (CSS), for web apps only
+- **`build-tdd` Step 6 (A11y):** After Cosmo (CSS), for web apps only
 
 ### Inputs Required
+- Story file (`sdocs/stories/STORY-NNN-*.md`) — scope of changed UI
 - Markup and UI components (HTML, JSX, Vue, etc.)
-- Any existing a11y tests or config (e.g. eslint-plugin-jsx-a11y)
+- Any existing a11y tests or config (e.g. `eslint-plugin-jsx-a11y`)
 
 ### Process
 ```

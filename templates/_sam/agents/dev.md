@@ -45,27 +45,27 @@ Example outputs:
 
 ---
 
-## In Autonomous Pipeline
+## In SAM Workflows
 
 ### When Invoked
-- **Phase 3 (TDD Loop - GREEN):** After Test Architect writes failing tests
+- **`build-tdd` Step 2 (GREEN):** After Titan writes failing tests
 
 ### Inputs Required
-- Story file with tasks/subtasks
-- Failing acceptance tests (from RED phase)
-- Access to codebase
+- A single story file conforming to `_sam/core/resources/story-schema.md`
+- Failing tests from RED phase
+- `## Technical Notes > Files in scope` (bounds where code can be modified)
 
 ### Process
 ```
-1. Read story file and current task
-2. Verify tests are failing (RED state confirmed)
-3. Implement minimum code to pass tests
-4. Run tests - iterate until GREEN
-5. Add unit tests for implementation details
-6. Verify ALL tests pass (acceptance + unit + full suite)
+1. Re-read the story file (especially Files in scope and Test Approach)
+2. Verify RED state (new tests failing for the right reason)
+3. Implement minimum code to pass tests — stay within Files in scope
+4. Run tests; iterate until GREEN
+5. Add unit tests for implementation details not covered by AC tests
+6. Run FULL test suite — no regression in prior stories' tests
 7. Run build verification (see below)
-8. Mark task complete
-9. Move to next task or signal story complete
+8. For stories that add providers / routers / context: verify the real entry point is wired
+9. Signal GREEN complete; workflow advances to REFACTOR
 ```
 
 ### Build Verification (Step 7)
@@ -73,12 +73,12 @@ Example outputs:
 After all tests pass, verify the app actually builds and boots — not just that tests pass in isolation. This catches missing files, unwired providers, broken imports, and configuration issues that unit tests mask.
 
 **Required checks:**
-1. **Build check:** Run the project's build command (e.g., `npm run build`, `npx vite build`). If it fails, the GREEN phase is NOT complete — fix the build before proceeding.
+1. **Build check:** Run the project's build command (e.g., `npm run build`, `npx vite build`). If it fails, GREEN is NOT complete — fix and re-run.
 2. **Full test suite:** Run ALL project tests, not just the current story's tests. If earlier stories' tests break, fix the regression before proceeding.
 
-**For scaffolding stories (first story of a project):**
-3. **Boot check:** Verify the app starts without crashing (server starts, client renders). This ensures the bootable app checklist from architecture-ref.md is satisfied.
-4. **Entry point wiring:** Confirm that all providers, routers, and context wrappers specified in the architecture are present in the actual app entry point (e.g., `main.jsx`), not just in test wrappers.
+**For scaffolding stories (stories with `## Bootable App Requirements`):**
+3. **Boot check:** Verify the app starts without crashing (server starts / client renders). Satisfies the bootable app checklist from `sdocs/architecture-ref.md`.
+4. **Entry point wiring:** Confirm that all providers, routers, and context wrappers specified in the architecture are present in the **real** app entry point (e.g., `main.jsx`), not just in test wrappers.
 
 **For stories that add providers, routers, or context:**
 5. **Entry point update:** When adding a new provider (AuthProvider, Router, ThemeProvider, etc.), update the real app entry point — not just test wrappers. Tests that wrap components in `<MemoryRouter>` or `<AuthProvider>` will pass even when the real app is missing these wrappers.
@@ -113,6 +113,8 @@ GREEN phase passes when:
 ## Reference Files
 
 When available, consult:
-- `**/project-context.md` - Project patterns and conventions
-- Story file - Single source of truth for requirements
-- Existing tests - Pattern for test structure
+- `_sam/core/resources/story-schema.md` — story file contract
+- Story file (`sdocs/stories/STORY-NNN-*.md`) — single source of truth for requirements and scope
+- `sdocs/architecture-ref.md` — bootable-app requirements, design standards, tech decisions
+- `**/project-context.md` — project patterns and conventions
+- Existing tests — pattern for test structure

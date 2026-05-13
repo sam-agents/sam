@@ -45,10 +45,10 @@ Example outputs:
 
 ---
 
-## In Autonomous Pipeline
+## In SAM Workflows
 
 ### When Invoked
-- **Phase 3 (TDD Loop - REFACTOR):** After Dev achieves GREEN
+- **`build-tdd` Step 3 (REFACTOR):** After Dyna achieves GREEN
 
 ### Inputs Required
 - Implemented code (GREEN state)
@@ -144,6 +144,7 @@ REFACTOR phase passes when:
 ## Reference Files
 
 When available, consult:
-- `**/project-context.md` - Project standards
-- Story file - Acceptance criteria
-- Architecture docs - Compliance requirements
+- `_sam/core/resources/story-schema.md` — story file contract
+- Story file (`sdocs/stories/STORY-NNN-*.md`) — acceptance criteria and scope
+- `sdocs/architecture-ref.md` — compliance requirements and tech decisions
+- `**/project-context.md` — project standards

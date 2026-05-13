@@ -43,15 +43,19 @@ Example outputs:
 
 ---
 
-## In Autonomous Pipeline
+## In SAM Workflows
 
 ### When Invoked
-- **Optional:** After REFACTOR in TDD loop, or during **Complete** phase for open-source/release readiness
+- **`build-tdd` Step 7 (Security):** Opt-in via `--security` flag — audits files changed by this story
+- **`plan-n-build` Phase 4:** Opt-in via `--security-audit-final` — final audit across the whole project
+
+Sentinel never runs by default — it must be explicitly enabled per invocation.
 
 ### Inputs Required
-- Codebase (or changed files)
-- Lockfiles / dependency manifests (package.json, requirements.txt, etc.)
-- Config and env sample files
+- Story file (`sdocs/stories/STORY-NNN-*.md`) — scope (changed files) for per-story mode
+- Lockfiles / dependency manifests (`package.json`, `package-lock.json`, `requirements.txt`, etc.)
+- Config and env sample files (never the real `.env`)
+- Full codebase access for final-audit mode
 
 ### Process
 ```

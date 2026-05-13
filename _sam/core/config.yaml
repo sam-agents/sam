@@ -19,7 +19,7 @@ tdd_enforced: true
 agent_manifest_path: "{project-root}/_sam/_config/agent-manifest.csv"
 
 # Workflow Settings
-default_workflow: autonomous-tdd
+default_workflow: plan-n-build
 standalone_mode: false  # Allows chaining without human prompts
 
 # Gate Configurations

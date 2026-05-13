@@ -40,8 +40,8 @@ function verifyGeminiSkills() {
   }
   console.log('✓ .gemini/skills directory created');
 
-  // Verify individual skills
-  const expectedSkills = [
+  // Verify agent skills (each has references/agent.md)
+  const expectedAgentSkills = [
     'sam-orchestrator',
     'sam-atlas',
     'sam-titan',
@@ -50,35 +50,46 @@ function verifyGeminiSkills() {
     'sam-sage',
     'sam-iris',
     'sam-cosmo',
-    'sam-tdd-pipeline'
+    'sam-sentinel',
+    'sam-aria',
+    'sam-upkeep'
   ];
 
-  for (const skill of expectedSkills) {
+  // Verify workflow skills (each has references/workflow.md)
+  const expectedWorkflowSkills = [
+    'sam-plan',
+    'sam-build-tdd',
+    'sam-plan-n-build'
+  ];
+
+  for (const skill of expectedAgentSkills) {
     const skillPath = path.join(skillsDir, skill);
     if (!fs.existsSync(skillPath)) {
       throw new Error(`Skill directory not created: ${skill}`);
     }
-    
-    const skillMd = path.join(skillPath, 'SKILL.md');
-    if (!fs.existsSync(skillMd)) {
+    if (!fs.existsSync(path.join(skillPath, 'SKILL.md'))) {
       throw new Error(`SKILL.md not created for: ${skill}`);
     }
-    
-    // Check if it's not the pipeline skill, verify references/agent.md
-    if (skill !== 'sam-tdd-pipeline') {
-      const agentMd = path.join(skillPath, 'references', 'agent.md');
-      if (!fs.existsSync(agentMd)) {
-        throw new Error(`agent.md not created in references for: ${skill}`);
-      }
-    } else {
-       // Check for pipeline workflow
-       const workflowMd = path.join(skillPath, 'references', 'workflow.md');
-       if (!fs.existsSync(workflowMd)) {
-         throw new Error(`workflow.md not created in references for: sam-tdd-pipeline`);
-       }
+    if (!fs.existsSync(path.join(skillPath, 'references', 'agent.md'))) {
+      throw new Error(`agent.md not created in references for: ${skill}`);
     }
   }
-  console.log(`✓ All ${expectedSkills.length} skills verified successfully`);
+
+  for (const skill of expectedWorkflowSkills) {
+    const skillPath = path.join(skillsDir, skill);
+    if (!fs.existsSync(skillPath)) {
+      throw new Error(`Workflow skill directory not created: ${skill}`);
+    }
+    if (!fs.existsSync(path.join(skillPath, 'SKILL.md'))) {
+      throw new Error(`SKILL.md not created for: ${skill}`);
+    }
+    if (!fs.existsSync(path.join(skillPath, 'references', 'workflow.md'))) {
+      throw new Error(`workflow.md not created in references for: ${skill}`);
+    }
+  }
+
+  const total = expectedAgentSkills.length + expectedWorkflowSkills.length;
+  console.log(`✓ All ${total} skills verified successfully (${expectedAgentSkills.length} agents, ${expectedWorkflowSkills.length} workflows)`);
 }
 
 try {

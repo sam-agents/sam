@@ -2,26 +2,35 @@ description = "SAM (Smart Agent Manager) - Autonomous TDD Agent System"
 prompt = """
 # SAM - Smart Agent Manager
 
-SAM is an autonomous TDD agent system that transforms requirements into tested code.
+SAM is an autonomous TDD agent system that transforms a PRD into tested code through three composable workflows.
 
-## Available Agents:
-- **sam-orchestrator**: Pipeline coordinator
+## Workflows
+- **sam-plan**: PRD -> validated epics and stories (no code)
+- **sam-build-tdd**: One story -> tested, reviewed code (RED-GREEN-REFACTOR)
+- **sam-plan-n-build**: End-to-end composer (plan + tdd for every story + comprehensive docs)
+
+## Agents
+- **sam-orchestrator**: Workflow coordinator
 - **sam-atlas**: Architect (PRD validation, technical design)
 - **sam-titan**: Test Architect (RED phase - write failing tests)
 - **sam-dyna**: Developer (GREEN phase - make tests pass)
 - **sam-argus**: Code Reviewer (REFACTOR phase)
-- **sam-sage**: Technical Writer (documentation)
-- **sam-iris**: UX Designer (UX validation)
+- **sam-iris**: UX Designer (UX validation, web apps)
 - **sam-cosmo**: CSS Consistency Reviewer (web apps only)
+- **sam-aria**: Accessibility Reviewer (web apps only)
+- **sam-sentinel**: Security Reviewer (opt-in)
+- **sam-sage**: Technical Writer (per-story changelog + comprehensive docs)
+- **sam-upkeep**: Dependency Maintenance (on demand)
 
-## Autonomous Workflow:
-- **sam-tdd-pipeline**: Full TDD pipeline from PRD to tested code
+## Usage
+Invoke a workflow with the path to your PRD or story:
+> "Run sam-plan-n-build with prd.md"
+> "Run sam-build-tdd on .sam/stories/STORY-001-user-login.md"
+> "Run sam-plan with prd.md"
 
-## Usage:
-To use an agent or start the pipeline, simply say:
-> "Run the `sam-tdd-pipeline` for [feature]"
-> "Ask `sam-atlas` to review the architecture"
+Or invoke an individual agent:
+> "Ask sam-atlas to review the architecture"
 
-Or manually activate their skill by typing:
-> `activate_skill('sam-orchestrator')`
+Or activate a skill directly:
+> `activate_skill('sam-plan-n-build')`
 """

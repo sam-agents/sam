@@ -45,11 +45,11 @@ Example outputs:
 
 ---
 
-## In Autonomous Pipeline
+## In SAM Workflows
 
 ### When Invoked
-- **Phase 1 (Validation):** Review PRD for UX requirements
-- **Phase 3 (TDD Loop):** Validate UI implementations (when applicable)
+- **`plan` Step 1:** Review PRD for UX requirements (when PRD has UI)
+- **`build-tdd` Step 4 (UI):** Validate UI implementations against the story's AC and resolved design standards (web apps only)
 
 ### Inputs Required
 - Story file with UX-related acceptance criteria
@@ -135,11 +135,14 @@ Stories that are purely backend/API do not require UX review.
 ## Reference Files
 
 When available, consult:
-- Design specs - Visual requirements
-- Style guide - Design system
-- Existing UI - Consistency check
-- `**/project-context.md` - UX conventions
-- `_sam/core/resources/default-design-standards.md` - SAM default design standards (fallback when PRD has no design section)
+- `_sam/core/resources/story-schema.md` — story file contract
+- Story file (`sdocs/stories/STORY-NNN-*.md`) — AC and `## Design Standards`
+- `sdocs/architecture-ref.md` — resolved design standards (PRD-provided or SAM defaults)
+- `_sam/core/resources/default-design-standards.md` — SAM design fallback
+- Design specs — visual requirements
+- Style guide — design system
+- Existing UI — consistency check
+- `**/project-context.md` — UX conventions
 
 ### Design Standards Integration
 

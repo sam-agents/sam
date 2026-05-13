@@ -14,6 +14,27 @@ const DIM = '\x1b[2m';
 
 const PLATFORMS = ['claude', 'cursor', 'antigravity', 'gemini', 'copilot', 'all'];
 
+const WORKFLOWS = [
+  {
+    name: 'plan',
+    file: 'core/workflows/plan/workflow.md',
+    display: 'SAM Planning Workflow',
+    description: 'Validate a PRD and decompose it into epics and stories. Does not implement code.'
+  },
+  {
+    name: 'build-tdd',
+    file: 'core/workflows/build-tdd/workflow.md',
+    display: 'SAM Build-TDD Workflow',
+    description: 'Implement a single user story using RED-GREEN-REFACTOR with conditional UI/CSS/A11y/Security review.'
+  },
+  {
+    name: 'plan-n-build',
+    file: 'core/workflows/plan-n-build/workflow.md',
+    display: 'SAM Plan-n-Build Workflow',
+    description: 'End-to-end composer: runs plan, then tdd for every story, then comprehensive docs. The one-shot PRD-to-working-code experience.'
+  }
+];
+
 function log(message, color = RESET) {
   console.log(`${color}${message}${RESET}`);
 }
@@ -127,62 +148,30 @@ To use this agent, the user should mention @${agent.name} in their message.
     }
   }
 
-  const workflowRule = `---
-description: SAM Autonomous TDD Workflow - Full pipeline from PRD to tested code
+  for (const workflow of WORKFLOWS) {
+    const workflowPath = path.join(samDir, workflow.file);
+    if (!fs.existsSync(workflowPath)) continue;
+
+    const content = fs.readFileSync(workflowPath, 'utf8');
+    const ruleContent = `---
+description: ${workflow.display} - ${workflow.description}
 globs: ["**/*"]
 alwaysApply: false
 ---
 
-# SAM Autonomous TDD Workflow
+# ${workflow.display}
 
-When the user mentions "@sam-tdd" or asks for the TDD workflow, execute this pipeline:
+When the user mentions "@sam-${workflow.name}" or asks to run the ${workflow.display.toLowerCase()}, follow these instructions:
 
-## Overview
-SAM orchestrates a team of AI agents to transform a PRD into working, tested code using strict TDD.
+${content}
 
-## The Pipeline
-
-### Phase 1: Validate PRD
-- @atlas reviews technical feasibility
-- @iris validates UX requirements
-
-### Phase 2: Generate Stories
-- Break PRD into epics and user stories
-- Create detailed acceptance criteria
-
-### Phase 3: TDD Loop (for each story)
-1. **RED**: @titan writes failing tests based on acceptance criteria
-2. **GREEN**: @dyna writes minimal code to make tests pass
-3. **REFACTOR**: @argus reviews and improves code quality
-4. **UI**: @iris reviews layout and fixes alignment (web apps only)
-5. **CSS**: @cosmo reviews styling consistency (web apps only)
-6. **A11y**: @aria reviews accessibility (web apps only)
-7. **Security** (optional): @sentinel reviews for vulnerabilities and secrets
-
-### Phase 4: Complete
-- @sage generates documentation
-- @sentinel (optional) security audit for open-source/release
-- Final review and handoff
-
-## Usage
-Mention @sam-tdd with a PRD or feature description to start the pipeline.
-
-## Agent Commands
-- @sam - Orchestrator
-- @atlas - Architect (PRD validation, technical design)
-- @titan - Test Architect (RED phase - write failing tests)
-- @dyna - Developer (GREEN phase - make tests pass)
-- @argus - Code Reviewer (REFACTOR phase)
-- @cosmo - CSS Consistency Reviewer (web apps only)
-- @sentinel - Security Reviewer (optional)
-- @aria - Accessibility Reviewer (web apps only)
-- @upkeep - Upkeep (dependency updates, on demand)
-- @sage - Technical Writer (documentation)
-- @iris - UX Designer (UX validation)
+## Invocation
+To run this workflow, mention @sam-${workflow.name} in your message.
 `;
 
-  fs.writeFileSync(path.join(cursorDir, 'sam-workflow.mdc'), workflowRule);
-  rulesCount++;
+    fs.writeFileSync(path.join(cursorDir, `sam-${workflow.name}.mdc`), ruleContent);
+    rulesCount++;
+  }
 
   return rulesCount;
 }
@@ -305,77 +294,40 @@ See: references/agent.md for complete agent definition.
     }
   }
 
-  // Create TDD Pipeline workflow skill
-  const pipelineDir = path.join(skillsDir, 'sam-tdd-pipeline');
-  const pipelineRefsDir = path.join(pipelineDir, 'references');
+  // Create one skill per workflow
+  for (const workflow of WORKFLOWS) {
+    const workflowPath = path.join(samDir, workflow.file);
+    if (!fs.existsSync(workflowPath)) continue;
 
-  if (!fs.existsSync(pipelineRefsDir)) {
-    fs.mkdirSync(pipelineRefsDir, { recursive: true });
-  }
+    const skillName = `sam-${workflow.name}`;
+    const skillDir = path.join(skillsDir, skillName);
+    const referencesDir = path.join(skillDir, 'references');
 
-  const pipelineSkill = `---
-name: sam-tdd-pipeline
-description: Autonomous TDD pipeline - transform PRD into working tested code using RED-GREEN-REFACTOR methodology
+    if (!fs.existsSync(referencesDir)) {
+      fs.mkdirSync(referencesDir, { recursive: true });
+    }
+
+    const skillContent = `---
+name: ${skillName}
+description: ${workflow.description}
 ---
 
-# SAM Autonomous TDD Pipeline
+# ${workflow.display}
 
-This skill orchestrates a complete TDD development workflow using specialized SAM agents.
+This is a SAM (Smart Agent Manager) workflow.
 
 ## When to Use
-Invoke this skill when you want to:
-- Transform a PRD into working, tested code
-- Follow strict TDD methodology (RED-GREEN-REFACTOR)
-- Use autonomous AI agents for development
+${workflow.description}
 
-## The Pipeline
+## Instructions
+Load and follow the full workflow definition from the references folder.
 
-### Phase 1: Validate PRD
-- sam-atlas reviews technical feasibility
-- sam-iris validates UX requirements
-
-### Phase 2: Generate Stories
-- Break PRD into epics and user stories
-- Create detailed acceptance criteria
-
-### Phase 3: TDD Loop (for each story)
-1. **RED**: sam-titan writes failing tests based on acceptance criteria
-2. **GREEN**: sam-dyna writes minimal code to make tests pass
-3. **REFACTOR**: sam-argus reviews and improves code quality
-4. **UI**: sam-iris reviews layout and fixes alignment (web apps only)
-5. **CSS**: sam-cosmo reviews styling consistency (web apps only)
-6. **A11y**: sam-aria reviews accessibility (web apps only)
-7. **Security** (optional): sam-sentinel reviews for vulnerabilities and secrets
-
-### Phase 4: Complete
-- sam-sage generates documentation
-- sam-sentinel (optional) security audit for open-source/release
-- Final review and handoff
-
-## Usage
-Provide a PRD or feature description to start the autonomous TDD pipeline.
-
-## Available Agents
-- /sam-orchestrator - Pipeline coordinator
-- /sam-atlas - Architect (PRD validation, technical design)
-- /sam-titan - Test Architect (RED phase)
-- /sam-dyna - Developer (GREEN phase)
-- /sam-argus - Code Reviewer (REFACTOR phase)
-- /sam-cosmo - CSS Consistency Reviewer (web apps only)
-- /sam-sentinel - Security Reviewer (optional)
-- /sam-aria - Accessibility Reviewer (web apps only)
-- /sam-upkeep - Dependency and Maintenance (on demand)
-- /sam-sage - Technical Writer (documentation)
-- /sam-iris - UX Designer (UX validation)
+See: references/workflow.md for complete workflow definition.
 `;
 
-  fs.writeFileSync(path.join(pipelineDir, 'SKILL.md'), pipelineSkill);
-  skillsCount++;
-
-  // Copy workflow files to references if they exist
-  const workflowPath = path.join(samDir, 'core/workflows/autonomous-tdd/workflow.md');
-  if (fs.existsSync(workflowPath)) {
-    fs.copyFileSync(workflowPath, path.join(pipelineRefsDir, 'workflow.md'));
+    fs.writeFileSync(path.join(skillDir, 'SKILL.md'), skillContent);
+    fs.copyFileSync(workflowPath, path.join(referencesDir, 'workflow.md'));
+    skillsCount++;
   }
 
   return skillsCount;
@@ -499,77 +451,40 @@ See: references/agent.md for complete agent definition.
     }
   }
 
-  // Create TDD Pipeline workflow skill
-  const pipelineDir = path.join(skillsDir, 'sam-tdd-pipeline');
-  const pipelineRefsDir = path.join(pipelineDir, 'references');
+  // Create one skill per workflow
+  for (const workflow of WORKFLOWS) {
+    const workflowPath = path.join(samDir, workflow.file);
+    if (!fs.existsSync(workflowPath)) continue;
 
-  if (!fs.existsSync(pipelineRefsDir)) {
-    fs.mkdirSync(pipelineRefsDir, { recursive: true });
-  }
+    const skillName = `sam-${workflow.name}`;
+    const skillDir = path.join(skillsDir, skillName);
+    const referencesDir = path.join(skillDir, 'references');
 
-  const pipelineSkill = `---
-name: sam-tdd-pipeline
-description: Autonomous TDD pipeline - transform PRD into working tested code using RED-GREEN-REFACTOR methodology
+    if (!fs.existsSync(referencesDir)) {
+      fs.mkdirSync(referencesDir, { recursive: true });
+    }
+
+    const skillContent = `---
+name: ${skillName}
+description: ${workflow.description}
 ---
 
-# SAM Autonomous TDD Pipeline
+# ${workflow.display}
 
-This skill orchestrates a complete TDD development workflow using specialized SAM agents.
+This is a SAM (Smart Agent Manager) workflow.
 
 ## When to Use
-Invoke this skill when you want to:
-- Transform a PRD into working, tested code
-- Follow strict TDD methodology (RED-GREEN-REFACTOR)
-- Use autonomous AI agents for development
+${workflow.description}
 
-## The Pipeline
+## Instructions
+Load and follow the full workflow definition from the references folder.
 
-### Phase 1: Validate PRD
-- sam-atlas reviews technical feasibility
-- sam-iris validates UX requirements
-
-### Phase 2: Generate Stories
-- Break PRD into epics and user stories
-- Create detailed acceptance criteria
-
-### Phase 3: TDD Loop (for each story)
-1. **RED**: sam-titan writes failing tests based on acceptance criteria
-2. **GREEN**: sam-dyna writes minimal code to make tests pass
-3. **REFACTOR**: sam-argus reviews and improves code quality
-4. **UI**: sam-iris reviews layout and fixes alignment (web apps only)
-5. **CSS**: sam-cosmo reviews styling consistency (web apps only)
-6. **A11y**: sam-aria reviews accessibility (web apps only)
-7. **Security** (optional): sam-sentinel reviews for vulnerabilities and secrets
-
-### Phase 4: Complete
-- sam-sage generates documentation
-- sam-sentinel (optional) security audit for open-source/release
-- Final review and handoff
-
-## Usage
-Provide a PRD or feature description to start the autonomous TDD pipeline.
-
-## Available Agents
-- activate_skill('sam-orchestrator') - Pipeline coordinator
-- activate_skill('sam-atlas') - Architect (PRD validation, technical design)
-- activate_skill('sam-titan') - Test Architect (RED phase)
-- activate_skill('sam-dyna') - Developer (GREEN phase)
-- activate_skill('sam-argus') - Code Reviewer (REFACTOR phase)
-- activate_skill('sam-cosmo') - CSS Consistency Reviewer (web apps only)
-- activate_skill('sam-sentinel') - Security Reviewer (optional)
-- activate_skill('sam-aria') - Accessibility Reviewer (web apps only)
-- activate_skill('sam-upkeep') - Dependency and Maintenance (on demand)
-- activate_skill('sam-sage') - Technical Writer (documentation)
-- activate_skill('sam-iris') - UX Designer (UX validation)
+See: references/workflow.md for complete workflow definition.
 `;
 
-  fs.writeFileSync(path.join(pipelineDir, 'SKILL.md'), pipelineSkill);
-  skillsCount++;
-
-  // Copy workflow files to references if they exist
-  const workflowPath = path.join(samDir, 'core/workflows/autonomous-tdd/workflow.md');
-  if (fs.existsSync(workflowPath)) {
-    fs.copyFileSync(workflowPath, path.join(pipelineRefsDir, 'workflow.md'));
+    fs.writeFileSync(path.join(skillDir, 'SKILL.md'), skillContent);
+    fs.copyFileSync(workflowPath, path.join(referencesDir, 'workflow.md'));
+    skillsCount++;
   }
 
   return skillsCount;
@@ -685,29 +600,27 @@ All SAM integration files are located in: copilot-integration/
     }
   }
 
-  // Add TDD Pipeline
-  const workflowPath = path.join(samDir, 'core/workflows/autonomous-tdd/workflow.md');
-  if (fs.existsSync(workflowPath)) {
-    const workflowContent = fs.readFileSync(workflowPath, 'utf8');
-    fs.writeFileSync(path.join(agentsDir, 'sam-tdd-pipeline.md'), workflowContent);
+  // Add one workflow file per SAM workflow
+  instructionsContent += `## SAM Workflows
+Three workflows compose the SAM TDD experience. Each is a self-contained playbook the user can invoke.
 
-    instructionsContent += `## SAM Autonomous TDD Pipeline
-Transform a PRD into working, tested code using specialized agents.
-
-### The Pipeline
-1. **Validate PRD**: sam-atlas (Architect) & sam-iris (UX)
-2. **Generate Stories**: Break into epics and user stories
-3. **TDD Loop**:
-   - **RED**: sam-titan (Test Architect)
-   - **GREEN**: sam-dyna (Developer)
-   - **REFACTOR**: sam-argus (Reviewer)
-   - **CSS**: sam-cosmo (CSS Reviewer, web apps only)
-   - **A11y**: sam-aria (Accessibility Reviewer, web apps only)
-   - **Security** (optional): sam-sentinel (Security Reviewer)
-4. **Finalize**: sam-sage (Technical Writer); sam-sentinel (optional) security audit
-
-- **Detailed Workflow**: copilot-integration/agents/sam-tdd-pipeline.md
 `;
+
+  for (const workflow of WORKFLOWS) {
+    const workflowPath = path.join(samDir, workflow.file);
+    if (!fs.existsSync(workflowPath)) continue;
+
+    const workflowContent = fs.readFileSync(workflowPath, 'utf8');
+    const workflowFile = `sam-${workflow.name}.md`;
+    fs.writeFileSync(path.join(agentsDir, workflowFile), workflowContent);
+
+    instructionsContent += `### ${workflow.display}
+- **Invocation**: "Run sam-${workflow.name}" or "Execute the ${workflow.display}"
+- **Purpose**: ${workflow.description}
+- **Detailed Workflow**: copilot-integration/agents/${workflowFile}
+
+`;
+    skillsCount++;
   }
 
   fs.writeFileSync(path.join(copilotDir, 'instructions.md'), instructionsContent);
@@ -828,66 +741,74 @@ function install(platform, targetDir) {
 
   if (platform === 'claude' || platform === 'all') {
     log('  Claude Code Commands:', CYAN);
-    log('    /sam:core:agents:sam          - SAM Orchestrator');
-    log('    /sam:sam:agents:atlas         - Atlas (Architect)');
-    log('    /sam:sam:agents:dyna          - Dyna (Developer)');
-    log('    /sam:sam:agents:titan         - Titan (Test Architect)');
-    log('    /sam:sam:agents:argus         - Argus (Code Reviewer)');
-    log('    /sam:sam:agents:cosmo         - Cosmo (CSS Reviewer)');
-    log('    /sam:sam:agents:sentinel      - Sentinel (Security Reviewer)');
-    log('    /sam:sam:agents:aria          - Aria (Accessibility Reviewer)');
-    log('    /sam:sam:agents:upkeep        - Upkeep (Dependency and Maintenance)');
-    log('    /sam:sam:agents:sage          - Sage (Tech Writer)');
-    log('    /sam:sam:agents:iris          - Iris (UX Designer)');
-    log('    /sam:core:workflows:autonomous-tdd - Full TDD Pipeline\n');
+    log('    /sam:core:agents:sam               - SAM Orchestrator');
+    log('    /sam:sam:agents:atlas              - Atlas (Architect)');
+    log('    /sam:sam:agents:dyna               - Dyna (Developer)');
+    log('    /sam:sam:agents:titan              - Titan (Test Architect)');
+    log('    /sam:sam:agents:argus              - Argus (Code Reviewer)');
+    log('    /sam:sam:agents:cosmo              - Cosmo (CSS Reviewer)');
+    log('    /sam:sam:agents:sentinel           - Sentinel (Security Reviewer)');
+    log('    /sam:sam:agents:aria               - Aria (Accessibility Reviewer)');
+    log('    /sam:sam:agents:upkeep             - Upkeep (Dependency and Maintenance)');
+    log('    /sam:sam:agents:sage               - Sage (Tech Writer)');
+    log('    /sam:sam:agents:iris               - Iris (UX Designer)');
+    log('    /sam:core:workflows:plan           - PRD -> epics + stories');
+    log('    /sam:core:workflows:build-tdd      - One story -> tested code');
+    log('    /sam:core:workflows:plan-n-build   - Full pipeline (plan + tdd + docs)\n');
   }
 
   if (platform === 'cursor' || platform === 'all') {
     log('  Cursor Commands (use @ mentions):', CYAN);
-    log('    @sam       - SAM Orchestrator');
-    log('    @atlas     - Atlas (Architect)');
-    log('    @dyna      - Dyna (Developer)');
-    log('    @titan     - Titan (Test Architect)');
-    log('    @argus     - Argus (Code Reviewer)');
-    log('    @cosmo     - Cosmo (CSS Reviewer)');
-    log('    @sentinel  - Sentinel (Security Reviewer)');
-    log('    @aria      - Aria (Accessibility Reviewer)');
-    log('    @upkeep    - Upkeep (Dependency and Maintenance)');
-    log('    @sage      - Sage (Tech Writer)');
-    log('    @iris      - Iris (UX Designer)');
-    log('    @sam-tdd   - Full TDD Pipeline\n');
+    log('    @sam               - SAM Orchestrator');
+    log('    @atlas             - Atlas (Architect)');
+    log('    @dyna              - Dyna (Developer)');
+    log('    @titan             - Titan (Test Architect)');
+    log('    @argus             - Argus (Code Reviewer)');
+    log('    @cosmo             - Cosmo (CSS Reviewer)');
+    log('    @sentinel          - Sentinel (Security Reviewer)');
+    log('    @aria              - Aria (Accessibility Reviewer)');
+    log('    @upkeep            - Upkeep (Dependency and Maintenance)');
+    log('    @sage              - Sage (Tech Writer)');
+    log('    @iris              - Iris (UX Designer)');
+    log('    @sam-plan          - PRD -> epics + stories');
+    log('    @sam-build-tdd     - One story -> tested code');
+    log('    @sam-plan-n-build  - Full pipeline (plan + tdd + docs)\n');
   }
 
   if (platform === 'antigravity' || platform === 'all') {
     log('  Antigravity Skills (use / commands):', CYAN);
-    log('    /sam-orchestrator  - SAM Orchestrator');
-    log('    /sam-atlas         - Atlas (Architect)');
-    log('    /sam-dyna          - Dyna (Developer)');
-    log('    /sam-titan         - Titan (Test Architect)');
-    log('    /sam-argus         - Argus (Code Reviewer)');
-    log('    /sam-cosmo         - Cosmo (CSS Reviewer)');
-    log('    /sam-sentinel      - Sentinel (Security Reviewer)');
-    log('    /sam-aria          - Aria (Accessibility Reviewer)');
-    log('    /sam-upkeep        - Upkeep (Dependency and Maintenance)');
-    log('    /sam-sage          - Sage (Tech Writer)');
-    log('    /sam-iris          - Iris (UX Designer)');
-    log('    /sam-tdd-pipeline  - Full TDD Pipeline\n');
+    log('    /sam-orchestrator   - SAM Orchestrator');
+    log('    /sam-atlas          - Atlas (Architect)');
+    log('    /sam-dyna           - Dyna (Developer)');
+    log('    /sam-titan          - Titan (Test Architect)');
+    log('    /sam-argus          - Argus (Code Reviewer)');
+    log('    /sam-cosmo          - Cosmo (CSS Reviewer)');
+    log('    /sam-sentinel       - Sentinel (Security Reviewer)');
+    log('    /sam-aria           - Aria (Accessibility Reviewer)');
+    log('    /sam-upkeep         - Upkeep (Dependency and Maintenance)');
+    log('    /sam-sage           - Sage (Tech Writer)');
+    log('    /sam-iris           - Iris (UX Designer)');
+    log('    /sam-plan           - PRD -> epics + stories');
+    log('    /sam-build-tdd      - One story -> tested code');
+    log('    /sam-plan-n-build   - Full pipeline (plan + tdd + docs)\n');
   }
 
   if (platform === 'gemini' || platform === 'all') {
     log('  Gemini CLI Skills (will be auto-detected):', CYAN);
-    log('    sam-orchestrator  - SAM Orchestrator');
-    log('    sam-atlas         - Atlas (Architect)');
-    log('    sam-dyna          - Dyna (Developer)');
-    log('    sam-titan         - Titan (Test Architect)');
-    log('    sam-argus         - Argus (Code Reviewer)');
-    log('    sam-cosmo         - Cosmo (CSS Reviewer)');
-    log('    sam-sentinel      - Sentinel (Security Reviewer)');
-    log('    sam-aria          - Aria (Accessibility Reviewer)');
-    log('    sam-upkeep        - Upkeep (Dependency and Maintenance)');
-    log('    sam-sage          - Sage (Tech Writer)');
-    log('    sam-iris          - Iris (UX Designer)');
-    log('    sam-tdd-pipeline  - Full TDD Pipeline\n');
+    log('    sam-orchestrator   - SAM Orchestrator');
+    log('    sam-atlas          - Atlas (Architect)');
+    log('    sam-dyna           - Dyna (Developer)');
+    log('    sam-titan          - Titan (Test Architect)');
+    log('    sam-argus          - Argus (Code Reviewer)');
+    log('    sam-cosmo          - Cosmo (CSS Reviewer)');
+    log('    sam-sentinel       - Sentinel (Security Reviewer)');
+    log('    sam-aria           - Aria (Accessibility Reviewer)');
+    log('    sam-upkeep         - Upkeep (Dependency and Maintenance)');
+    log('    sam-sage           - Sage (Tech Writer)');
+    log('    sam-iris           - Iris (UX Designer)');
+    log('    sam-plan           - PRD -> epics + stories');
+    log('    sam-build-tdd      - One story -> tested code');
+    log('    sam-plan-n-build   - Full pipeline (plan + tdd + docs)\n');
   }
 
   if (platform === 'copilot' || platform === 'all') {
@@ -903,7 +824,9 @@ function install(platform, targetDir) {
     log('    "Act as sam-upkeep"       - Upkeep (Dependency and Maintenance)');
     log('    "Act as sam-sage"         - Sage (Tech Writer)');
     log('    "Act as sam-iris"         - Iris (UX Designer)');
-    log('    "Run TDD pipeline"        - Full TDD Pipeline\n');
+    log('    "Run sam-plan"            - PRD -> epics + stories');
+    log('    "Run sam-build-tdd"       - One story -> tested code');
+    log('    "Run sam-plan-n-build"    - Full pipeline (plan + tdd + docs)\n');
   }
 
   if (platform === 'claude' || platform === 'all') {

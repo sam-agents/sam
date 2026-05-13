@@ -45,29 +45,28 @@ Example outputs:
 
 ---
 
-## In Autonomous Pipeline
+## In SAM Workflows
 
 ### When Invoked
-- **Phase 3 (TDD Loop - RED):** Before Dev implements
+- **`build-tdd` Step 1 (RED):** Before Dyna implements anything
 
 ### Inputs Required
-- Story file with acceptance criteria
-- Access to test framework
-- Existing test patterns
+- A single story file conforming to `_sam/core/resources/story-schema.md`
+- `## Acceptance Criteria` (each AC → at least one test)
+- `## Technical Notes > Files in scope` (bounds where tests live)
+- `## Test Approach` (unit / integration / e2e split)
 
 ### Process
 ```
-1. Read story file and acceptance criteria
-2. Analyze each AC for testable assertions
-3. Design test cases:
-   - Happy path scenarios
-   - Edge cases
-   - Error conditions
-4. Write test code (tests MUST fail)
-5. Run tests - verify they fail
-6. If any test passes: STOP and investigate
-7. Document test coverage plan
-8. Signal RED phase complete
+1. Read the story file; validate against story-schema.md (refuse invalid stories)
+2. Parse every AC checkbox into a testable assertion
+3. Apply the story's Test Approach split (unit / integration / e2e)
+4. Design test cases per AC: happy path, edge cases, error conditions
+5. Write tests in the project's existing conventions
+6. Run tests — confirm ALL new tests fail
+7. Confirm failures are due to missing implementation, not test errors
+8. If any test passes: HALT and investigate (likely existing implementation)
+9. Signal RED complete; workflow advances to GREEN
 ```
 
 ### Outputs
@@ -115,6 +114,7 @@ describe('Story: [Story Title]', () => {
 ## Reference Files
 
 When available, consult:
-- Story file - Source of acceptance criteria
-- Existing tests - Follow established patterns
-- `**/project-context.md` - Testing conventions
+- `_sam/core/resources/story-schema.md` — story file contract (required reading)
+- Story file (`sdocs/stories/STORY-NNN-*.md`) — source of AC and scope
+- Existing tests — follow established patterns
+- `**/project-context.md` — testing conventions

@@ -47,31 +47,51 @@ Example outputs:
 
 ---
 
-## In Autonomous Pipeline
+## In SAM Workflows
 
-### When Invoked
-- **Phase 4 (Completion):** After all stories implemented and reviewed
+Sage runs in **two modes**:
+
+### Mode 1: Per-story (lightweight) — `build-tdd` Step 8
+
+After every story passes its review phases:
+- Append a single `CHANGELOG.md` entry (Keep a Changelog format) for the story
+- Update API reference notes if the story changed a public surface
+- Skip with a logged note if the story is internal-only (refactor, dep bump)
+
+Per-story docs do NOT rewrite README or generate feature tutorials.
+
+### Mode 2: Comprehensive — `plan-n-build` Phase 3
+
+After every story in a `plan-n-build` run is complete:
+- Aggregate per-story changelog entries, deduplicate, group by feature
+- Generate feature-level documentation under `docs/features/` for completed epics
+- Update top-level README (Features / Usage / API sections)
+- Suggest a semver bump (major / minor / patch) and draft release notes
 
 ### Inputs Required
+- Story file (`sdocs/stories/STORY-NNN-*.md`) — AC and acceptance scope
 - Implemented and reviewed code
-- Story files with acceptance criteria
 - Test files (as behavior documentation)
-- Existing documentation (if any)
+- Existing `CHANGELOG.md` / `docs/` / `README.md`
 
-### Process
+### Process (Mode 1 — per story)
 ```
-1. Analyze implemented features
-2. Review tests for behavior documentation
-3. Generate/update:
-   - Feature documentation
-   - API references (if applicable)
-   - Usage examples
-   - README updates
-   - CHANGELOG entries (Added/Changed/Fixed) and release notes when requested
-4. Verify examples actually work
-5. Cross-reference with acceptance criteria
-6. For releases: suggest semver bump and draft release notes
-7. Signal documentation complete
+1. Read story file (frontmatter + body)
+2. Identify what changed (Added / Changed / Fixed)
+3. Append a single changelog entry under [Unreleased]
+4. If public surface changed: update API reference for the delta
+5. Skip with logged reason if internal-only
+6. Signal docs complete; workflow advances to mark story done
+```
+
+### Process (Mode 2 — comprehensive)
+```
+1. Aggregate all per-story changelog entries from this run
+2. Group by epic / feature; deduplicate overlapping items
+3. Generate feature docs under docs/features/<epic-slug>.md
+4. Update README with new public-facing capabilities
+5. Suggest semver bump (major/minor/patch) and draft release notes
+6. Cross-reference with AC across all completed stories
 ```
 
 ### Outputs
@@ -121,15 +141,15 @@ Solution...
 
 ## Documentation Types
 
-| Type | Purpose | When Created |
-|------|---------|--------------|
-| Feature Docs | Explain what and how | After implementation |
-| API Reference | Technical details | After implementation |
-| Examples | Show usage | After implementation |
-| README | Project overview | Updated as needed |
-| CHANGELOG | Track changes (Added/Changed/Fixed) | After each story or release |
-| Release notes | Summarize release for users | When cutting a release |
-| Semver hint | major/minor/patch suggestion | When cutting a release |
+| Type | Purpose | Mode |
+|------|---------|------|
+| CHANGELOG entry | Track changes (Added / Changed / Fixed) | Mode 1 (per story) |
+| API reference delta | Public-surface changes | Mode 1 (per story) |
+| Feature docs | Explain what and how | Mode 2 (comprehensive) |
+| README updates | Project overview | Mode 2 (comprehensive) |
+| Release notes | User-facing release summary | Mode 2 (comprehensive) |
+| Semver hint | major / minor / patch suggestion | Mode 2 (comprehensive) |
+| Examples | Working code samples | Mode 2 (comprehensive) |
 
 ---
 
@@ -168,7 +188,9 @@ Invoke Sage when setting up a new repo for contributions or when improving first
 ## Reference Files
 
 When available, consult:
-- Implemented code - Source of truth
-- Test files - Behavior documentation
-- Existing docs - Style and structure
-- `**/project-context.md` - Documentation conventions
+- `_sam/core/resources/story-schema.md` — story file contract
+- Story file (`sdocs/stories/STORY-NNN-*.md`) — AC and scope for Mode 1
+- Implemented code — source of truth
+- Test files — behavior documentation
+- Existing `CHANGELOG.md`, `docs/`, `README.md` — style and structure
+- `**/project-context.md` — documentation conventions

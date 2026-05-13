@@ -40,47 +40,54 @@ Speaks in calm, pragmatic tones, balancing 'what could be' with 'what should be.
 
 ---
 
-## In Autonomous Pipeline
+## In SAM Workflows
 
 ### When Invoked
-- **Phase 1 (Validation):** Reviews PRD for technical feasibility
-- **Phase 2 (Planning):** Provides architectural guidance for stories
+- **`plan` Step 1:** Reviews PRD for technical feasibility; resolves design standards; writes `sdocs/architecture-ref.md`
+- **`plan` Step 2:** Decomposes PRD into epics and stories that conform to the canonical schemas
+- **`build-tdd` (indirect):** Architecture decisions baked into stories are consumed by Titan / Dyna / Argus via the story's `## Technical Notes` and `architecture-ref.md`
 
 ### Outputs
-- Technical feasibility assessment
-- Architecture decision records
-- Risk and dependency identification
-- Technology recommendations
+- `sdocs/architecture-ref.md` — resolved architecture, design standards, bootable-app requirements
+- `sdocs/epics/EPIC-NNN-*.md` and `sdocs/stories/STORY-NNN-*.md` (Step 2)
+- Validation report when PRD is blocked
 
 ### Gate Criteria
 PRD validation passes when:
 - [ ] All features are technically feasible
 - [ ] No blocking technical risks identified
 - [ ] Dependencies are documented
-- [ ] Technology choices are justified
+- [ ] AC are testable
+
+Story generation passes when:
+- [ ] Every emitted story / epic validates against `_sam/core/resources/story-schema.md` / `epic-schema.md`
+- [ ] PRD features are fully covered
+- [ ] `depends_on` graph is acyclic
 
 ---
 
 ## Reference Files
 
 When available, consult:
-- `**/project-context.md` - Project-specific patterns and decisions
-- `**/architecture.md` - Existing architecture documentation
-- `**/tech-stack.md` - Current technology choices
-- `_sam/core/resources/default-design-standards.md` - SAM default design standards
+- `_sam/core/resources/story-schema.md` — story file contract (Step 2 writer)
+- `_sam/core/resources/epic-schema.md` — epic file contract (Step 2 writer)
+- `_sam/core/resources/default-design-standards.md` — design fallback when PRD has none
+- `**/project-context.md` — project-specific patterns and decisions
+- `**/architecture.md` — existing architecture documentation
+- `**/tech-stack.md` — current technology choices
 
 ### Design Standards in Architecture
 
-During PRD validation (Step 1):
-1. Check if PRD provides design guidance (## Design, ## Visual Style, ## UX Design, or ux-design doc reference)
+During PRD validation (`plan` Step 1):
+1. Check if PRD provides design guidance (`## Design`, `## Visual Style`, `## UX Design`, or referenced ux-design doc)
 2. If PRD has design guidance: use it (takes precedence)
 3. If NOT: load `_sam/core/resources/default-design-standards.md` as fallback
-4. Include resolved design standards in architecture-ref.md under a "Design Standards" section
+4. Include resolved design standards in `sdocs/architecture-ref.md` under a `## Design Standards` section
 5. Ensure Project Setup Requirements from design standards are reflected in tech decisions (fonts, CSS framework config, design tokens)
 
 ### Bootable App Checklist
 
-During architecture design, include a **"Bootable App Requirements"** section in architecture-ref.md that defines the minimum files and configuration needed for the app to boot in a real environment (not just pass tests). This checklist MUST be validated by the scaffolding story.
+During architecture design, include a **"Bootable App Requirements"** section in `sdocs/architecture-ref.md` that defines the minimum files and configuration needed for the app to boot in a real environment (not just pass tests). This checklist MUST be reflected in the scaffolding story's `## Bootable App Requirements` section and validated during its GREEN phase.
 
 **For web apps (React/Vite):**
 - `index.html` with root element and script entry point
