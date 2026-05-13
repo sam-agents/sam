@@ -6,7 +6,7 @@
 
 **Autonomous TDD agent system for Claude Code, Cursor, Gemini CLI, GitHub Copilot, and Antigravity.**
 
-SAM orchestrates a team of specialized AI agents that transform your PRD into working, tested code using strict Test-Driven Development (RED-GREEN-REFACTOR).
+SAM orchestrates a team of specialized AI agents that transform an idea or PRD into working, tested code using strict Test-Driven Development (RED-GREEN-REFACTOR). Don't have a PRD yet? Start with `scope` — SAM will help you draft one.
 
 ## Quick Start
 
@@ -61,23 +61,30 @@ npx sam-agents --platform all          # All platforms
 
 ## Workflows
 
-SAM ships three composable workflows. Use them individually, or run `plan-n-build` for the one-shot PRD → working code experience.
+SAM ships four composable workflows. Run any of them on its own, or use `plan-n-build` for the one-shot experience (add `--from-idea` if you don't have a PRD yet).
 
 | Workflow | Goal | Output |
 |----------|------|--------|
+| **scope** | Idea, rough notes, or nothing → a draft PRD you can iterate on | `sdocs/prd.md` |
 | **plan** | Validate a PRD and decompose it into epics and stories | `sdocs/epics/`, `sdocs/stories/`, `sdocs/architecture-ref.md` |
 | **build-tdd** | Implement a single story via RED-GREEN-REFACTOR + conditional review | Working code, tests, changelog entry |
 | **plan-n-build** | Compose plan + build-tdd over every story + comprehensive docs | Full project + `docs/features/` + release notes |
 
+Typical flow: **scope → plan → build-tdd** (manual stepping), or **`plan-n-build`** end-to-end. With `--from-idea`, plan-n-build prepends scope automatically (non-interactive).
+
 ### Invocation per platform
 
-| Platform | plan | build-tdd | plan-n-build |
-|----------|------|-----------|--------------|
-| Claude Code | `/sam:core:workflows:plan <prd>` | `/sam:core:workflows:build-tdd <story>` | `/sam:core:workflows:plan-n-build <prd>` |
-| Cursor | `@sam-plan` | `@sam-build-tdd` | `@sam-plan-n-build` |
-| Gemini CLI | `sam-plan` | `sam-build-tdd` | `sam-plan-n-build` |
-| GitHub Copilot | `Run sam-plan` | `Run sam-build-tdd` | `Run sam-plan-n-build` |
-| Antigravity | `/sam-plan` | `/sam-build-tdd` | `/sam-plan-n-build` |
+| Platform | scope | plan | build-tdd | plan-n-build |
+|----------|-------|------|-----------|--------------|
+| Claude Code | `/sam:core:workflows:scope <idea>` | `/sam:core:workflows:plan <prd>` | `/sam:core:workflows:build-tdd <story>` | `/sam:core:workflows:plan-n-build <prd>` |
+| Cursor | `@sam-scope` | `@sam-plan` | `@sam-build-tdd` | `@sam-plan-n-build` |
+| Gemini CLI | `sam-scope` | `sam-plan` | `sam-build-tdd` | `sam-plan-n-build` |
+| GitHub Copilot | `Run sam-scope` | `Run sam-plan` | `Run sam-build-tdd` | `Run sam-plan-n-build` |
+| Antigravity | `/sam-scope` | `/sam-plan` | `/sam-build-tdd` | `/sam-plan-n-build` |
+
+### Inside `scope`: idea → PRD
+
+`scope` accepts prose, a notes file, or nothing at all. SAM orchestrates Iris (UX questions) and Atlas (technical questions) to fill gaps, then Sage drafts a PRD conforming to [`prd-schema.md`](_sam/core/resources/prd-schema.md). Always produces a draft on the first pass — even thin sections become honest "TBD" notes plus Open Questions you can iterate on.
 
 ### Inside `build-tdd`: the TDD loop
 
@@ -101,8 +108,8 @@ your-project/
 ├── _sam/                      # Agent and workflow definitions (shared across platforms)
 │   ├── agents/                # Atlas, Titan, Dyna, Argus, ...
 │   ├── core/agents/           # SAM orchestrator
-│   ├── core/resources/        # story-schema, epic-schema, design defaults
-│   └── core/workflows/        # plan/, build-tdd/, plan-n-build/
+│   ├── core/resources/        # prd-schema, story-schema, epic-schema, design defaults
+│   └── core/workflows/        # scope/, plan/, build-tdd/, plan-n-build/
 ├── .claude/commands/sam/      # Claude Code slash commands
 ├── .cursor/rules/             # Cursor @mention rules
 ├── .gemini/skills/            # Gemini CLI skills
@@ -110,7 +117,7 @@ your-project/
 └── .agent/skills/             # Antigravity skills
 ```
 
-Workflows write their output to `sdocs/` in your project root (epics, stories, architecture refs, run reports). This is generated content — not installed by the CLI.
+Workflows write their output to `sdocs/` in your project root (`prd.md`, epics, stories, architecture refs, run reports). This is generated content — not installed by the CLI.
 
 ## Requirements
 

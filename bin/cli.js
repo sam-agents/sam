@@ -16,6 +16,12 @@ const PLATFORMS = ['claude', 'cursor', 'antigravity', 'gemini', 'copilot', 'all'
 
 const WORKFLOWS = [
   {
+    name: 'scope',
+    file: 'core/workflows/scope/workflow.md',
+    display: 'SAM Scope Workflow',
+    description: 'Turn an idea, rough notes, or nothing at all into a PRD that plan can consume.'
+  },
+  {
     name: 'plan',
     file: 'core/workflows/plan/workflow.md',
     display: 'SAM Planning Workflow',
@@ -752,6 +758,7 @@ function install(platform, targetDir) {
     log('    /sam:sam:agents:upkeep             - Upkeep (Dependency and Maintenance)');
     log('    /sam:sam:agents:sage               - Sage (Tech Writer)');
     log('    /sam:sam:agents:iris               - Iris (UX Designer)');
+    log('    /sam:core:workflows:scope          - Idea -> PRD');
     log('    /sam:core:workflows:plan           - PRD -> epics + stories');
     log('    /sam:core:workflows:build-tdd      - One story -> tested code');
     log('    /sam:core:workflows:plan-n-build   - Full pipeline (plan + tdd + docs)\n');
@@ -770,6 +777,7 @@ function install(platform, targetDir) {
     log('    @upkeep            - Upkeep (Dependency and Maintenance)');
     log('    @sage              - Sage (Tech Writer)');
     log('    @iris              - Iris (UX Designer)');
+    log('    @sam-scope         - Idea -> PRD');
     log('    @sam-plan          - PRD -> epics + stories');
     log('    @sam-build-tdd     - One story -> tested code');
     log('    @sam-plan-n-build  - Full pipeline (plan + tdd + docs)\n');
@@ -788,6 +796,7 @@ function install(platform, targetDir) {
     log('    /sam-upkeep         - Upkeep (Dependency and Maintenance)');
     log('    /sam-sage           - Sage (Tech Writer)');
     log('    /sam-iris           - Iris (UX Designer)');
+    log('    /sam-scope          - Idea -> PRD');
     log('    /sam-plan           - PRD -> epics + stories');
     log('    /sam-build-tdd      - One story -> tested code');
     log('    /sam-plan-n-build   - Full pipeline (plan + tdd + docs)\n');
@@ -806,6 +815,7 @@ function install(platform, targetDir) {
     log('    sam-upkeep         - Upkeep (Dependency and Maintenance)');
     log('    sam-sage           - Sage (Tech Writer)');
     log('    sam-iris           - Iris (UX Designer)');
+    log('    sam-scope          - Idea -> PRD');
     log('    sam-plan           - PRD -> epics + stories');
     log('    sam-build-tdd      - One story -> tested code');
     log('    sam-plan-n-build   - Full pipeline (plan + tdd + docs)\n');
@@ -824,6 +834,7 @@ function install(platform, targetDir) {
     log('    "Act as sam-upkeep"       - Upkeep (Dependency and Maintenance)');
     log('    "Act as sam-sage"         - Sage (Tech Writer)');
     log('    "Act as sam-iris"         - Iris (UX Designer)');
+    log('    "Run sam-scope"           - Idea -> PRD');
     log('    "Run sam-plan"            - PRD -> epics + stories');
     log('    "Run sam-build-tdd"       - One story -> tested code');
     log('    "Run sam-plan-n-build"    - Full pipeline (plan + tdd + docs)\n');

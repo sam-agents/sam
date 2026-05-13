@@ -57,6 +57,7 @@ function verifyGeminiSkills() {
 
   // Verify workflow skills (each has references/workflow.md)
   const expectedWorkflowSkills = [
+    'sam-scope',
     'sam-plan',
     'sam-build-tdd',
     'sam-plan-n-build'

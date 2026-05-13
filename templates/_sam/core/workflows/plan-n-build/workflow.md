@@ -17,11 +17,14 @@ This workflow contains **no original logic** beyond composition, ordering, and f
 ## INPUTS
 
 ```
-/sam:core:workflows:plan-n-build <prd-path>            # full pipeline from PRD
-/sam:core:workflows:plan-n-build --resume              # resume in current sdocs/ dir
+/sam:core:workflows:plan-n-build <prd-path>                       # full pipeline from PRD
+/sam:core:workflows:plan-n-build --from-idea "<idea>"             # full pipeline from prose
+/sam:core:workflows:plan-n-build --from-idea ./notes.md           # full pipeline from notes
+/sam:core:workflows:plan-n-build --resume                         # resume in current sdocs/ dir
 ```
 
 Optional flags:
+- `--from-idea <prose-or-path>` — no PRD yet; prepend `scope` (in `--non-interactive` mode) to draft one from the input
 - `--security` — pass through to every `build-tdd` invocation
 - `--no-web-review` — pass through to every `build-tdd` invocation
 - `--skip-plan` — skip Phase 1 (use existing `sdocs/stories/`); requires `sdocs/stories/` to exist
@@ -31,12 +34,25 @@ Optional flags:
 
 ## PRECONDITIONS
 
-- Without `--skip-plan` / `--resume`: a PRD path is provided and readable
+- Without `--from-idea` / `--skip-plan` / `--resume`: a PRD path is provided and readable
+- With `--from-idea`: an idea (prose or path to notes) is provided
 - With `--resume` or `--skip-plan`: `sdocs/stories/` exists with at least one story
 
 ---
 
 ## PHASES
+
+### Phase 0: Scope (only when `--from-idea`)
+
+Invoke `/sam:core:workflows:scope --non-interactive --out sdocs/prd.md <idea>` and wait for completion.
+
+`scope` runs in non-interactive mode here to preserve plan-n-build's "no human prompts during execution" contract. The PRD it produces will have `status: draft` and may contain Open Questions; this is intentional. The user can re-run `scope sdocs/prd.md` after the composer finishes to refine and accept.
+
+Halt the composer if scope refuses (empty input, write conflict on `<out>`). After successful scope, the input to Phase 1 becomes `sdocs/prd.md`.
+
+Skip when:
+- `--from-idea` is not set (default — user already has a PRD)
+- `--skip-plan` or `--resume` is set (use existing artifacts)
 
 ### Phase 1: Plan (skippable)
 
@@ -127,6 +143,7 @@ Because story `status` is the single source of truth, there is no separate state
 
 | Situation | Behavior |
 |-----------|----------|
+| `scope` fails (with `--from-idea`) | Halt entire composer; report the input issue |
 | `plan` fails validation | Halt entire composer; report PRD revisions needed |
 | Story file fails schema validation | Halt before TDD starts; do not implement against invalid stories |
 | `depends_on` cycle | Halt before TDD starts; report the cycle |

@@ -48,6 +48,7 @@ Example outputs:
 ## In SAM Workflows
 
 ### When Invoked
+- **`scope` Step 2 (UX Discovery):** Ask targeted questions to fill UX-side gaps in the PRD — users, journey, success criteria, design constraints
 - **`plan` Step 1:** Review PRD for UX requirements (when PRD has UI)
 - **`build-tdd` Step 4 (UI):** Validate UI implementations against the story's AC and resolved design standards (web apps only)
 

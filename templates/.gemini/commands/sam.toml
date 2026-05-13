@@ -2,12 +2,13 @@ description = "SAM (Smart Agent Manager) - Autonomous TDD Agent System"
 prompt = """
 # SAM - Smart Agent Manager
 
-SAM is an autonomous TDD agent system that transforms a PRD into tested code through three composable workflows.
+SAM is an autonomous TDD agent system that transforms an idea or PRD into tested code through four composable workflows.
 
 ## Workflows
+- **sam-scope**: Idea / notes / nothing -> PRD (interactive discovery via Iris + Atlas)
 - **sam-plan**: PRD -> validated epics and stories (no code)
 - **sam-build-tdd**: One story -> tested, reviewed code (RED-GREEN-REFACTOR)
-- **sam-plan-n-build**: End-to-end composer (plan + tdd for every story + comprehensive docs)
+- **sam-plan-n-build**: End-to-end composer (plan + tdd for every story + comprehensive docs); pass --from-idea to prepend scope
 
 ## Agents
 - **sam-orchestrator**: Workflow coordinator
@@ -23,9 +24,11 @@ SAM is an autonomous TDD agent system that transforms a PRD into tested code thr
 - **sam-upkeep**: Dependency Maintenance (on demand)
 
 ## Usage
-Invoke a workflow with the path to your PRD or story:
+Invoke a workflow with the path to your idea, PRD, or story:
+> "Run sam-scope to draft a PRD for [idea]"
 > "Run sam-plan-n-build with prd.md"
-> "Run sam-build-tdd on .sam/stories/STORY-001-user-login.md"
+> "Run sam-plan-n-build --from-idea 'build a TODO app'"
+> "Run sam-build-tdd on sdocs/stories/STORY-001-user-login.md"
 > "Run sam-plan with prd.md"
 
 Or invoke an individual agent:

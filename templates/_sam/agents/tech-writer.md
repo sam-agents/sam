@@ -49,7 +49,15 @@ Example outputs:
 
 ## In SAM Workflows
 
-Sage runs in **two modes**:
+Sage runs in **three modes**:
+
+### Mode 0: PRD drafting — `scope` Step 4
+
+After Iris and Atlas finish discovery (or in `--non-interactive` mode, immediately after intake):
+- Write a PRD conforming to `_sam/core/resources/prd-schema.md`
+- All 7 required sections present, even when thin — fill gaps with honest "TBD: <reason>" + Open Questions, never omit
+- Always produce a draft on the first pass; user iterates to improve via the refine loop
+- Validate against the schema before writing the file
 
 ### Mode 1: Per-story (lightweight) — `build-tdd` Step 8
 
@@ -143,6 +151,7 @@ Solution...
 
 | Type | Purpose | Mode |
 |------|---------|------|
+| PRD | Product requirements drafted from discovery | Mode 0 (scope) |
 | CHANGELOG entry | Track changes (Added / Changed / Fixed) | Mode 1 (per story) |
 | API reference delta | Public-surface changes | Mode 1 (per story) |
 | Feature docs | Explain what and how | Mode 2 (comprehensive) |
@@ -188,6 +197,7 @@ Invoke Sage when setting up a new repo for contributions or when improving first
 ## Reference Files
 
 When available, consult:
+- `_sam/core/resources/prd-schema.md` — PRD file contract (Mode 0)
 - `_sam/core/resources/story-schema.md` — story file contract
 - Story file (`sdocs/stories/STORY-NNN-*.md`) — AC and scope for Mode 1
 - Implemented code — source of truth

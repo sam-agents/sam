@@ -43,6 +43,7 @@ Speaks in calm, pragmatic tones, balancing 'what could be' with 'what should be.
 ## In SAM Workflows
 
 ### When Invoked
+- **`scope` Step 3 (Technical Discovery):** Ask targeted questions to fill technical gaps in the PRD — stack, integrations, scale, deployment; surface feasibility flags early
 - **`plan` Step 1:** Reviews PRD for technical feasibility; resolves design standards; writes `sdocs/architecture-ref.md`
 - **`plan` Step 2:** Decomposes PRD into epics and stories that conform to the canonical schemas
 - **`build-tdd` (indirect):** Architecture decisions baked into stories are consumed by Titan / Dyna / Argus via the story's `## Technical Notes` and `architecture-ref.md`
