@@ -1,4 +1,5 @@
 name,description,module,path
+"quick-prd","SAM Quick PRD Workflow - Quill drafts a valid PRD in one pass, making explicit assumptions where the user is silent.","core","_sam/core/workflows/quick-prd/workflow.md"
 "scope","SAM Scope Workflow - Turns an idea, rough notes, or nothing at all into a PRD that plan can consume.","core","_sam/core/workflows/scope/workflow.md"
 "plan","SAM Planning Workflow - Transforms a PRD into validated epics and stories. Does not implement code.","core","_sam/core/workflows/plan/workflow.md"
 "build-tdd","SAM Build-TDD Workflow - Implements a single user story using RED-GREEN-REFACTOR with conditional UI/CSS/A11y/Security review.","core","_sam/core/workflows/build-tdd/workflow.md"

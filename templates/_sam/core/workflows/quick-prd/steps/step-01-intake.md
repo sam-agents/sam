@@ -84,18 +84,15 @@ Default-picking heuristics:
 
 When a heuristic doesn't fit, pick the simplest plausible answer and label it.
 
-Build the assumption list:
+Build the assumption list in the same bold-then-period format the PRD will render with:
 
-```yaml
-assumptions:
-  - field: Platform
-    value: "Web app (React + Fastify)"
-    reason: "Input mentioned 'users sign in' → assumed browser-based"
-  - field: Auth
-    value: "Email + password, no SSO in v1"
-    reason: "Auth implied but not specified; defaulted to simplest"
-  # ...
+```markdown
+- **Platform: web app (React + Fastify).** Input mentioned "users sign in" → assumed browser-based.
+- **Auth: email + password, no SSO in v1.** Auth implied but not specified; defaulted to simplest.
+- ...
 ```
+
+This is the exact text Quill writes under `## Assumptions` in `step-02-draft.md`, so build it in the final format rather than translating from YAML.
 
 ### 1.4 Decide whether to ask
 

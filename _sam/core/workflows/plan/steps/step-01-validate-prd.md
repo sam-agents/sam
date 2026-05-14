@@ -29,6 +29,17 @@ Read the PRD and extract:
 - Acceptance criteria (or evidence they can be derived)
 - Technical constraints
 - UX / design requirements (if any)
+- `## Assumptions` block, if present (written by `quick-prd`)
+- `## Open Questions` block, if present (written by `scope`)
+
+### 1.1a Surface Assumptions and Open Questions
+
+Before any review, scan the PRD for `## Assumptions` and `## Open Questions` sections and report them to the user verbatim:
+
+- **Assumptions present** (typical when `source: quick-prd`) → list every line and prompt: *"These defaults were chosen because you were silent on the topic. Confirm, edit, or reject before stories are generated."* Do not block on assumptions — they are reviewable defaults, not unknowns. Record the user's response (or "no changes") in `sdocs/validation-report.md`.
+- **Open Questions present** (typical when `source: scope`) → list every line and prompt: *"These items are genuinely undecided. Each one risks producing stories with wrong assumptions baked in."* Recommend resolving before proceeding, but allow the user to continue at their own risk. Record decisions in `sdocs/validation-report.md`.
+
+If neither block is present, skip this sub-step silently.
 
 ### 1.2 Architect Review (Atlas)
 

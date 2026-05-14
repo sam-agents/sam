@@ -55,7 +55,10 @@ Example outputs:
 
 ### Inputs
 - One of: inline prose, path to a notes/transcript file, or nothing at all
-- Optional: `--out <path>` to override the default `sdocs/prd.md`
+- Optional flags (mirror `quick-prd/workflow.md`):
+  - `--out <path>` — override the default `sdocs/prd.md`
+  - `--non-interactive` — skip the questions step; rely entirely on defaults + assumptions
+  - `--force` — overwrite an existing PRD at the target path
 
 ### Process
 ```

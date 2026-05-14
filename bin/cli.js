@@ -246,12 +246,6 @@ function generateAntigravitySkills(samDir, targetDir) {
       description: 'Draft a PRD in one pass with explicit assumptions for unstated details, fast on-ramp before scope or plan'
     },
     {
-      name: 'sam-quill',
-      file: 'agents/product-manager.md',
-      display: 'Quill - Product Manager',
-      description: 'Quick PRD authoring; one-pass PRD drafting with explicit assumptions where input is thin'
-    },
-    {
       name: 'sam-cosmo',
       file: 'agents/css-reviewer.md',
       display: 'Cosmo - CSS Consistency Reviewer',
@@ -413,12 +407,6 @@ function generateGeminiSkills(samDir, targetDir) {
       file: 'agents/product-manager.md',
       display: 'Quill - Product Manager',
       description: 'Draft a PRD in one pass with explicit assumptions for unstated details, fast on-ramp before scope or plan'
-    },
-    {
-      name: 'sam-quill',
-      file: 'agents/product-manager.md',
-      display: 'Quill - Product Manager',
-      description: 'Quick PRD authoring; one-pass PRD drafting with explicit assumptions where input is thin'
     },
     {
       name: 'sam-cosmo',
@@ -585,12 +573,6 @@ function generateCopilotSkills(samDir, targetDir) {
       description: 'Draft a PRD in one pass with explicit assumptions for unstated details, fast on-ramp before scope or plan'
     },
     {
-      name: 'sam-quill',
-      file: 'agents/product-manager.md',
-      display: 'Quill - Product Manager',
-      description: 'Quick PRD authoring; one-pass PRD drafting with explicit assumptions where input is thin'
-    },
-    {
       name: 'sam-cosmo',
       file: 'agents/css-reviewer.md',
       display: 'Cosmo - CSS Consistency Reviewer',
@@ -651,7 +633,7 @@ All SAM integration files are located in: copilot-integration/
 
   // Add one workflow file per SAM workflow
   instructionsContent += `## SAM Workflows
-Three workflows compose the SAM TDD experience. Each is a self-contained playbook the user can invoke.
+Five workflows compose the SAM experience (quick-prd, scope, plan, build-tdd, plan-n-build). Each is a self-contained playbook the user can invoke.
 
 `;
 

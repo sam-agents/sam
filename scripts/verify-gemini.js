@@ -92,6 +92,24 @@ function verifyGeminiSkills() {
   }
 
   const total = expectedAgentSkills.length + expectedWorkflowSkills.length;
+
+  // Guard against duplicate registrations: total skill directories under .gemini/skills/
+  // must match the expected count. If a generator double-registers an agent or workflow,
+  // the dir count won't change (overwrite), but the install counter banner and the
+  // generated content (e.g. Copilot instructions.md) will inflate — so also assert
+  // there are no stray dirs beyond what we expect.
+  const actualSkillDirs = fs.readdirSync(skillsDir, { withFileTypes: true })
+    .filter(d => d.isDirectory())
+    .map(d => d.name);
+  const allExpected = new Set([...expectedAgentSkills, ...expectedWorkflowSkills]);
+  const unexpected = actualSkillDirs.filter(d => !allExpected.has(d));
+  if (unexpected.length > 0) {
+    throw new Error(`Unexpected skill directories found (possible duplicate or stale): ${unexpected.join(', ')}`);
+  }
+  if (actualSkillDirs.length !== total) {
+    throw new Error(`Skill count mismatch: expected ${total}, found ${actualSkillDirs.length}`);
+  }
+
   console.log(`✓ All ${total} skills verified successfully (${expectedAgentSkills.length} agents, ${expectedWorkflowSkills.length} workflows)`);
 }
 

@@ -1,11 +1,11 @@
 ---
 name: prd-schema
-description: Canonical schema for SAM PRD files. Written by scope workflow, read by plan workflow.
+description: Canonical schema for SAM PRD files. Written by quick-prd or scope workflow, read by plan workflow.
 ---
 
 # PRD Schema
 
-The contract between `scope` (writes PRDs from ideas) and `plan` (consumes PRDs to produce stories). A scope-generated PRD MUST conform to this schema. Hand-written PRDs SHOULD conform, but `plan` is lenient — it only halts when *required* sections are missing or empty.
+The contract between `quick-prd` / `scope` (which write PRDs from ideas) and `plan` (which consumes PRDs to produce stories). A quick-prd- or scope-generated PRD MUST conform to this schema. Hand-written PRDs SHOULD conform, but `plan` is lenient — it only halts when *required* sections are missing or empty.
 
 ---
 
@@ -26,12 +26,12 @@ version: 0.1                          # bump on each accepted revision
 status: draft | reviewed | accepted   # draft = scope just wrote it; accepted = user approved
 created: 2026-05-13                   # YYYY-MM-DD, set on first write
 last_updated: 2026-05-13              # bumped on each revision
-source: scope | hand-written | imported   # how this PRD came to exist
+source: quick-prd | scope | hand-written | imported   # how this PRD came to exist
 owner: <person, team, or role>        # optional, who owns the spec
 ---
 ```
 
-`source: scope` tells downstream workflows that this PRD was machine-drafted from an idea — useful context for `plan` when deciding how aggressively to question assumptions.
+`source: quick-prd` or `source: scope` tells downstream workflows that this PRD was machine-drafted from an idea — useful context for `plan` when deciding how aggressively to question assumptions. `source: quick-prd` specifically flags that defaults were chosen in place of user input and recorded in `## Assumptions`; those should be reviewed before stories are generated.
 
 ---
 
@@ -99,6 +99,15 @@ Known unknowns scope couldn't resolve. The honest acknowledgment that some thing
 ```markdown
 - Should we support social login (Google, GitHub) in v1, or defer?
 - What's the password complexity policy — match competitors or define our own?
+```
+
+### `## Assumptions`
+Defaults Quill picked when the user was silent during `quick-prd`. Each line states the assumption and the reason it was chosen. Distinct from Open Questions: an assumption *has* a working answer (the user can react to it); an open question does not. `plan` Step 1 will surface non-empty Assumptions blocks so the user can promote, edit, or reject them before stories are generated.
+
+```markdown
+- **Platform: web app (React).** Reason: most common SAM target; user did not specify.
+- **Auth: email + password.** Reason: simplest path that covers the goal; social login deferred.
+- **Storage: existing MongoDB stack.** Reason: matches CLAUDE.md; no other DB mentioned.
 ```
 
 ---
