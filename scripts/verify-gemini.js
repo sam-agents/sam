@@ -53,7 +53,8 @@ function verifyGeminiSkills() {
     'sam-cosmo',
     'sam-sentinel',
     'sam-aria',
-    'sam-upkeep'
+    'sam-upkeep',
+    'sam-lens'
   ];
 
   // Verify workflow skills (each has references/workflow.md)
@@ -62,7 +63,8 @@ function verifyGeminiSkills() {
     'sam-scope',
     'sam-plan',
     'sam-build-tdd',
-    'sam-plan-n-build'
+    'sam-plan-n-build',
+    'sam-extend'
   ];
 
   for (const skill of expectedAgentSkills) {

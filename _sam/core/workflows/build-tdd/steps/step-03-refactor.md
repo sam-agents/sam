@@ -50,6 +50,12 @@ agents: [reviewer]
 - [ ] Edge cases from `## Test Approach` are exercised
 - [ ] Error paths are intentional, not accidental
 
+### Contract conformance
+- [ ] Every contract in the story's `produces:` is satisfied by real exports — names, signatures, error semantics match the contract body exactly
+- [ ] Every contract's invariants are exercised by at least one test
+- [ ] No type or interface redeclared locally that should be imported from a `consumes:` contract
+- [ ] Producer story has flipped each `produces:` contract from `status: draft` to `status: stable`
+
 ### Testing
 - [ ] All AC have tests (already enforced by RED, re-verify)
 - [ ] Unit tests cover internal logic not exercised by AC tests
@@ -115,6 +121,8 @@ agents: [reviewer]
 - [ ] Full test suite passing
 - [ ] Build succeeding
 - [ ] Entry-point wiring intact
+- [ ] Every `produces:` contract verified against actual exports — drift between contract and implementation is a Critical issue
+- [ ] No locally-redeclared types where a `consumes:` import was available — drift between consumer and producer is a Critical issue
 
 If Critical / Moderate issues remain after auto-fix: increment retry count; on third failure, set story `status: blocked` with phase `refactor`.
 

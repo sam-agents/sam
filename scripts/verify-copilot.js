@@ -59,7 +59,8 @@ function verifyCopilotInstall() {
     { name: 'sam-cosmo',        display: 'Cosmo - CSS Consistency Reviewer' },
     { name: 'sam-sentinel',     display: 'Sentinel - Security Reviewer' },
     { name: 'sam-aria',         display: 'Aria - Accessibility Reviewer' },
-    { name: 'sam-upkeep',       display: 'Upkeep - Dependency and Maintenance' }
+    { name: 'sam-upkeep',       display: 'Upkeep - Dependency and Maintenance' },
+    { name: 'sam-lens',         display: 'Lens - Demo Recorder' }
   ];
 
   const expectedWorkflows = [
@@ -67,7 +68,8 @@ function verifyCopilotInstall() {
     { name: 'sam-scope',        display: 'SAM Scope Workflow' },
     { name: 'sam-plan',         display: 'SAM Planning Workflow' },
     { name: 'sam-build-tdd',    display: 'SAM Build-TDD Workflow' },
-    { name: 'sam-plan-n-build', display: 'SAM Plan-n-Build Workflow' }
+    { name: 'sam-plan-n-build', display: 'SAM Plan-n-Build Workflow' },
+    { name: 'sam-extend',       display: 'SAM Extend Workflow' }
   ];
 
   const instructions = fs.readFileSync(instructionsPath, 'utf8');

@@ -8,7 +8,7 @@ version: 1.0.0
 
 **Goal:** Take one validated story and drive it to `done` using strict Test-Driven Development.
 
-**Your Role:** You are SAM orchestrating the TDD cycle for one story. You coordinate Titan (RED), Dyna (GREEN), Argus (REFACTOR), and conditional reviewers (Iris / Cosmo / Aria / Sentinel), then Sage logs the per-story changelog.
+**Your Role:** You are SAM orchestrating the TDD cycle for one story. You coordinate Titan (RED), Dyna (GREEN), Argus (REFACTOR), and conditional reviewers (Iris / Cosmo / Aria / Sentinel), then Sage logs the per-story changelog. When the story is the last in an epic (the `kind: integration` story) and the project is a web stack, Lens runs after the integration story passes to capture demo evidence for the whole epic.
 
 This workflow is **single-story scoped**. To process multiple stories, use `plan-n-build` (which calls this workflow per story).
 
@@ -108,6 +108,14 @@ ready ──► in-progress ──► done
 - Update API reference if the story added / changed a public surface
 - Comprehensive docs are handled by `plan-n-build` at the end of the full run
 
+### Phase 9 (epic-end, conditional): Demo
+**Step:** `./steps/step-09-demo.md` (agent: Lens)
+- Runs ONLY when the current story is the epic's `kind: integration` story AND it just reached `status: done` AND the project is a web stack
+- Lens drives a real browser through the user flow declared by the integration story's `## Demo Probes`, captures video / screenshots / console / network as evidence under `sdocs/evidence/<epic-id>/`
+- Evidence-only; not a verifier. The integration story is what proved the seams compose.
+- **Gate:** evidence files exist with non-zero size, every declared probe appears in network.json with matching method/URL/status, no `[pageerror]` in console.log
+- Skips with a logged `skip.md` for non-web stacks
+
 ---
 
 ## CONDITIONAL EXECUTION
@@ -115,6 +123,8 @@ ready ──► in-progress ──► done
 Web review (Iris / Cosmo / Aria) runs only when web indicators are present in the consumer project. Each agent runs its own activation check; the workflow does not gate on a single flag.
 
 Security (Sentinel) is opt-in per invocation — never auto-runs in the single-story workflow.
+
+Demo (Lens) runs only when (a) the current story is the epic's `kind: integration` story, (b) that story just reached `done`, and (c) a web stack is detected. For non-web stacks, Lens writes a structured `skip.md` and the epic closes without a video. Lens never runs for per-story phases (RED/GREEN/REFACTOR); the slice they produce is incoherent for demo recording.
 
 ---
 
@@ -142,6 +152,7 @@ phase_log:
   a11y:     { completed_at: <ts> }    # if web
   security: { completed_at: <ts> }    # if --security
   docs:     { completed_at: <ts> }
+  demo:     { completed_at: <ts>, evidence: sdocs/evidence/<epic-id>/ }   # integration story only, web stack
 ```
 
 ---

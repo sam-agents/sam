@@ -110,6 +110,22 @@ Defaults Quill picked when the user was silent during `quick-prd`. Each line sta
 - **Storage: existing MongoDB stack.** Reason: matches CLAUDE.md; no other DB mentioned.
 ```
 
+### `## Change log`
+Populated by `extend` whenever an addendum lands. Each entry records the addendum slug, the date, and a one-line summary of what changed. The Change log is **the** signal that the PRD is a living document — readers who skip it might miss recent additions.
+
+```markdown
+- **2026-05-15 — tags-on-todos.** Added optional tags field to todos; api.todo and api.create-todo bumped v1→v2.
+- **2026-06-02 — bulk-delete.** Added DELETE /api/todos endpoint to clear all; new contract api.bulk-delete.
+```
+
+When `extend` merges an addendum into this PRD, it:
+1. Appends the addendum's new functional requirements to `## Functional Requirements`
+2. Appends the addendum's `## Out of scope` items to this PRD's `## Out of Scope` (creating the section if absent)
+3. Adds an entry to `## Change log` with the addendum slug, date, and summary
+4. Bumps frontmatter `version` (e.g. `0.1 → 0.2`) and updates `last_updated`
+
+The original addendum file is preserved at `sdocs/addenda/<date>-<slug>.md` as the audit trail. The PRD itself reflects the current state of the product.
+
 ---
 
 ## Validation rules

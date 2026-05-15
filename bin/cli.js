@@ -44,6 +44,12 @@ const WORKFLOWS = [
     file: 'core/workflows/plan-n-build/workflow.md',
     display: 'SAM Plan-n-Build Workflow',
     description: 'End-to-end composer: runs plan, then tdd for every story, then comprehensive docs. The one-shot PRD-to-working-code experience.'
+  },
+  {
+    name: 'extend',
+    file: 'core/workflows/extend/workflow.md',
+    display: 'SAM Extend Workflow',
+    description: 'Plan additive changes on top of an existing app. Reads existing sdocs/, never wipes; emits new contracts, stories, and regression integration without modifying done work.'
   }
 ];
 
@@ -130,7 +136,8 @@ function generateCursorRules(samDir, targetDir) {
     { name: 'cosmo', file: 'agents/css-reviewer.md', display: 'Cosmo - CSS Consistency Reviewer' },
     { name: 'sentinel', file: 'agents/security-reviewer.md', display: 'Sentinel - Security Reviewer' },
     { name: 'aria', file: 'agents/accessibility-reviewer.md', display: 'Aria - Accessibility Reviewer' },
-    { name: 'upkeep', file: 'agents/dependency-upkeep.md', display: 'Upkeep - Dependency and Maintenance' }
+    { name: 'upkeep', file: 'agents/dependency-upkeep.md', display: 'Upkeep - Dependency and Maintenance' },
+    { name: 'lens', file: 'agents/lens.md', display: 'Lens - Demo Recorder' }
   ];
 
   let rulesCount = 0;
@@ -268,6 +275,12 @@ function generateAntigravitySkills(samDir, targetDir) {
       file: 'agents/dependency-upkeep.md',
       display: 'Upkeep - Dependency and Maintenance',
       description: 'Dependency updates, lockfile maintenance, breaking-change assessment (on demand)'
+    },
+    {
+      name: 'sam-lens',
+      file: 'agents/lens.md',
+      display: 'Lens - Demo Recorder',
+      description: 'Post-integration demo capture: drives a real browser through the epic user flow, records video, screenshots, console, network as evidence. Web-stack epics only.'
     }
   ];
 
@@ -431,6 +444,12 @@ function generateGeminiSkills(samDir, targetDir) {
       file: 'agents/dependency-upkeep.md',
       display: 'Upkeep - Dependency and Maintenance',
       description: 'Dependency updates, lockfile maintenance, breaking-change assessment (on demand)'
+    },
+    {
+      name: 'sam-lens',
+      file: 'agents/lens.md',
+      display: 'Lens - Demo Recorder',
+      description: 'Post-integration demo capture: drives a real browser through the epic user flow, records video, screenshots, console, network as evidence. Web-stack epics only.'
     }
   ];
 
@@ -595,6 +614,12 @@ function generateCopilotSkills(samDir, targetDir) {
       file: 'agents/dependency-upkeep.md',
       display: 'Upkeep - Dependency and Maintenance',
       description: 'Dependency updates, lockfile maintenance, breaking-change assessment (on demand)'
+    },
+    {
+      name: 'sam-lens',
+      file: 'agents/lens.md',
+      display: 'Lens - Demo Recorder',
+      description: 'Post-integration demo capture: drives a real browser through the epic user flow, records video, screenshots, console, network as evidence. Web-stack epics only.'
     }
   ];
 
@@ -784,11 +809,13 @@ function install(platform, targetDir) {
     log('    /sam:sam:agents:sage               - Sage (Tech Writer)');
     log('    /sam:sam:agents:iris               - Iris (UX Designer)');
     log('    /sam:sam:agents:quill              - Quill (Product Manager)');
+    log('    /sam:sam:agents:lens               - Lens (Demo Recorder)');
     log('    /sam:core:workflows:quick-prd      - Idea -> Quick PRD (one pass, explicit assumptions)');
     log('    /sam:core:workflows:scope          - Idea -> PRD (full discovery)');
     log('    /sam:core:workflows:plan           - PRD -> epics + stories');
     log('    /sam:core:workflows:build-tdd      - One story -> tested code');
-    log('    /sam:core:workflows:plan-n-build   - Full pipeline (plan + tdd + docs)\n');
+    log('    /sam:core:workflows:plan-n-build   - Full pipeline (plan + tdd + docs)');
+    log('    /sam:core:workflows:extend         - Plan additive changes on top of existing app\n');
   }
 
   if (platform === 'cursor' || platform === 'all') {
@@ -805,11 +832,13 @@ function install(platform, targetDir) {
     log('    @sage              - Sage (Tech Writer)');
     log('    @iris              - Iris (UX Designer)');
     log('    @quill             - Quill (Product Manager)');
+    log('    @lens              - Lens (Demo Recorder)');
     log('    @sam-quick-prd     - Idea -> Quick PRD (one pass, explicit assumptions)');
     log('    @sam-scope         - Idea -> PRD (full discovery)');
     log('    @sam-plan          - PRD -> epics + stories');
     log('    @sam-build-tdd     - One story -> tested code');
-    log('    @sam-plan-n-build  - Full pipeline (plan + tdd + docs)\n');
+    log('    @sam-plan-n-build  - Full pipeline (plan + tdd + docs)');
+    log('    @sam-extend        - Plan additive changes on top of existing app\n');
   }
 
   if (platform === 'antigravity' || platform === 'all') {
@@ -826,11 +855,13 @@ function install(platform, targetDir) {
     log('    /sam-sage           - Sage (Tech Writer)');
     log('    /sam-iris           - Iris (UX Designer)');
     log('    /sam-quill          - Quill (Product Manager)');
+    log('    /sam-lens           - Lens (Demo Recorder)');
     log('    /sam-quick-prd      - Idea -> Quick PRD (one pass, explicit assumptions)');
     log('    /sam-scope          - Idea -> PRD (full discovery)');
     log('    /sam-plan           - PRD -> epics + stories');
     log('    /sam-build-tdd      - One story -> tested code');
-    log('    /sam-plan-n-build   - Full pipeline (plan + tdd + docs)\n');
+    log('    /sam-plan-n-build   - Full pipeline (plan + tdd + docs)');
+    log('    /sam-extend         - Plan additive changes on top of existing app\n');
   }
 
   if (platform === 'gemini' || platform === 'all') {
@@ -847,11 +878,13 @@ function install(platform, targetDir) {
     log('    sam-sage           - Sage (Tech Writer)');
     log('    sam-iris           - Iris (UX Designer)');
     log('    sam-quill          - Quill (Product Manager)');
+    log('    sam-lens           - Lens (Demo Recorder)');
     log('    sam-quick-prd      - Idea -> Quick PRD (one pass, explicit assumptions)');
     log('    sam-scope          - Idea -> PRD (full discovery)');
     log('    sam-plan           - PRD -> epics + stories');
     log('    sam-build-tdd      - One story -> tested code');
-    log('    sam-plan-n-build   - Full pipeline (plan + tdd + docs)\n');
+    log('    sam-plan-n-build   - Full pipeline (plan + tdd + docs)');
+    log('    sam-extend         - Plan additive changes on top of existing app\n');
   }
 
   if (platform === 'copilot' || platform === 'all') {
@@ -868,11 +901,13 @@ function install(platform, targetDir) {
     log('    "Act as sam-sage"         - Sage (Tech Writer)');
     log('    "Act as sam-iris"         - Iris (UX Designer)');
     log('    "Act as sam-quill"        - Quill (Product Manager)');
+    log('    "Act as sam-lens"         - Lens (Demo Recorder)');
     log('    "Run sam-quick-prd"       - Idea -> Quick PRD (one pass, explicit assumptions)');
     log('    "Run sam-scope"           - Idea -> PRD (full discovery)');
     log('    "Run sam-plan"            - PRD -> epics + stories');
     log('    "Run sam-build-tdd"       - One story -> tested code');
-    log('    "Run sam-plan-n-build"    - Full pipeline (plan + tdd + docs)\n');
+    log('    "Run sam-plan-n-build"    - Full pipeline (plan + tdd + docs)');
+    log('    "Run sam-extend"          - Plan additive changes on top of existing app\n');
   }
 
   if (platform === 'claude' || platform === 'all') {

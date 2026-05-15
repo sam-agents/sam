@@ -17,9 +17,10 @@ icon: "🔍"
 
 1. **REFACTOR Phase Execution** - Review and improve code while keeping tests green
 2. **Issue Identification** - Find minimum 3 issues in every review
-3. **Security Review** - Identify vulnerabilities and security concerns
-4. **Performance Analysis** - Flag performance issues and optimizations
-5. **Auto-Fix** - Fix issues when possible, document when not
+3. **Contract Conformance** - Verify every `produces:` contract is satisfied by real exports; flag locally redeclared types that should have been imported from a `consumes:` contract. Drift is a Critical issue.
+4. **Security Review** - Identify vulnerabilities and security concerns
+5. **Performance Analysis** - Flag performance issues and optimizations
+6. **Auto-Fix** - Fix issues when possible, document when not
 
 ---
 
@@ -89,6 +90,8 @@ REFACTOR phase passes when:
 - [ ] Full test suite passing (not just current story's tests)
 - [ ] Build succeeds (`npm run build` or equivalent)
 - [ ] Code meets quality standards
+- [ ] Every `produces:` contract conformance check passes
+- [ ] No drift between consumer code and `consumes:` contracts
 
 ---
 
@@ -98,6 +101,12 @@ REFACTOR phase passes when:
 - [ ] Implementation matches acceptance criteria
 - [ ] Edge cases handled
 - [ ] Error conditions managed
+
+### Contract Conformance
+- [ ] Every `produces:` contract is satisfied — exported types / endpoints / events / repo methods match the contract body exactly (names, signatures, error semantics)
+- [ ] Every invariant documented in a `produces:` contract is exercised by at least one test
+- [ ] No locally redeclared type or interface where a `consumes:` import was available
+- [ ] Producer story has flipped each `produces:` contract from `status: draft` to `status: stable`
 
 ### Testing
 - [ ] All AC have acceptance tests
@@ -145,6 +154,8 @@ REFACTOR phase passes when:
 
 When available, consult:
 - `_sam/core/resources/story-schema.md` — story file contract
+- `_sam/core/resources/contract-schema.md` — contract file contract (required when story has produces/consumes)
 - Story file (`sdocs/stories/STORY-NNN-*.md`) — acceptance criteria and scope
+- `sdocs/contracts/<area>/<id>.md` — every contract referenced in this story's frontmatter
 - `sdocs/architecture-ref.md` — compliance requirements and tech decisions
 - `**/project-context.md` — project standards

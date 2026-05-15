@@ -24,15 +24,26 @@ agents: [dev]
 ## PROCESS
 
 ```
-1. Re-read the story file (especially `Files in scope` and `Test Approach`)
+1. Re-read the story file (especially `Files in scope`, `Test Approach`, `produces:`, `consumes:`)
 2. Confirm RED state (tests fail)
-3. Implement minimum code to pass tests
-4. Run the new tests until they pass
-5. Add unit tests for implementation details not covered by AC tests
-6. Run the FULL project test suite (not just new tests) — no regression allowed
-7. Run the build command — must succeed
-8. For stories adding providers / routers / context: verify the real app entry point is wired
-9. Mark story phase complete
+3. For every contract in `produces:`: read the contract body and design the exported surface
+   so that it matches the contract verbatim (same type names, same method signatures, same
+   error semantics). The contract is the spec.
+4. For every contract in `consumes:`: import the producer's surface — never redeclare types
+   or copy interface definitions across stories.
+5. Implement minimum code to pass tests
+6. Run the new tests until they pass
+7. Add unit tests for implementation details not covered by AC tests
+8. Run the FULL project test suite (not just new tests) — no regression allowed
+9. Run the build command — must succeed
+10. For stories adding providers / routers / context: verify the real app entry point is wired
+11. For `kind: integration` stories: do NOT write production code. The integration story
+    surfaces missing seams as failing tests; missing seams are resolved by re-opening the
+    relevant feature story or by adding a new feature story, not by writing production code
+    here.
+12. After tests pass, flip each `produces:` contract's `status` from `draft` to `stable` in
+    `sdocs/contracts/<area>/<id>.md`
+13. Mark story phase complete
 ```
 
 ---
@@ -89,6 +100,10 @@ if attempt == 3:
 - [ ] Build succeeds (`npm run build` or project equivalent)
 - [ ] Real entry point wired for any new providers / routers (not just test wrappers)
 - [ ] For scaffolding: app boots in dev mode
+- [ ] Every `produces:` contract is satisfied: the exported types / endpoints / events / repo methods exactly match the contract body
+- [ ] Every `produces:` contract's status updated to `stable` in `sdocs/contracts/`
+- [ ] No `consumes:` type was redeclared locally — the producer's exports are imported, not copied
+- [ ] For `kind: integration`: no production code was written; only test files in scope changed
 
 ---
 

@@ -4,3 +4,4 @@ name,description,module,path
 "plan","SAM Planning Workflow - Transforms a PRD into validated epics and stories. Does not implement code.","core","_sam/core/workflows/plan/workflow.md"
 "build-tdd","SAM Build-TDD Workflow - Implements a single user story using RED-GREEN-REFACTOR with conditional UI/CSS/A11y/Security review.","core","_sam/core/workflows/build-tdd/workflow.md"
 "plan-n-build","SAM end-to-end composer - runs plan, then tdd for every story, then comprehensive docs.","core","_sam/core/workflows/plan-n-build/workflow.md"
+"extend","SAM Extend Workflow - Plan additive changes on top of an existing app. Reads existing sdocs/, never wipes; emits new contracts, stories, and regression integration without modifying done work.","core","_sam/core/workflows/extend/workflow.md"
