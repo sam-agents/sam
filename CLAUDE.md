@@ -45,6 +45,28 @@ node bin/cli.js --platform all ./test-project   # manual smoke test
 
 YAML frontmatter (`name`, `displayName`, `title`, `icon`) followed by sections: Core Responsibilities, Communication Style, Principles, In Autonomous Pipeline, Error Handling. See [AGENTS.md](AGENTS.md) for the full template and JS style rules for `bin/cli.js`.
 
+## Publishing to npm
+
+Releases are automated via GitHub Actions — **never run `npm publish` locally**. There is no local npm login; the workflow uses a repo-scoped `NPM_TOKEN` secret.
+
+The flow:
+
+1. Make sure `main` is clean and `npm test` passes locally.
+2. Bump the version (this creates a commit + git tag automatically):
+   ```bash
+   npm version patch   # bug fix
+   npm version minor   # new feature, backwards-compatible
+   npm version major   # breaking change
+   ```
+3. Push the commit and tag:
+   ```bash
+   git push origin main --follow-tags
+   ```
+4. Create a GitHub Release pointing at the new tag (UI or `gh release create vX.Y.Z --generate-notes`). Publishing the release triggers `.github/workflows/publish.yml`, which runs `npm publish --access public --provenance`.
+5. Verify with `npm view sam-agents version` after the workflow finishes.
+
+If the workflow fails (e.g. token expired, version conflict), fix the underlying issue and re-publish the release from the GitHub UI — do not work around it by publishing locally.
+
 ## Notes
 
 - Agent file names are lowercase-with-hyphens (e.g. `tech-writer.md`); display names are Title case (Dyna, Titan, Argus, …).
