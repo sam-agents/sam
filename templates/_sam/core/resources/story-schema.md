@@ -31,7 +31,7 @@ id: STORY-003                         # stable identifier; never renumber
 epic: EPIC-001                        # parent epic id (or null for ad-hoc stories)
 kind: feature                         # feature | integration | scaffolding
 title: User can reset password       # one-line summary, no trailing period
-status: ready                         # draft | ready | in-progress | done | blocked
+status: ready                         # draft | ready | in-progress | done | blocked | needs-rebuild | obsolete
 priority: P1                          # P0 (critical) | P1 (normal) | P2 (nice-to-have)
 prd: ../../prd.md                     # relative path from this file to the source PRD (or null)
 depends_on: [STORY-001]               # list of story ids that must be `done` first; [] if none
@@ -52,6 +52,11 @@ created: 2026-05-13                   # YYYY-MM-DD; never changes after creation
   - `ready` → `in-progress` (when `build-tdd` picks it up)
   - `in-progress` → `done` (when `build-tdd` completes all phases)
   - any → `blocked` (when retry limit hit; include reason in body)
+  - `done` → `needs-rebuild` (when a contract this story produces has changed; code is kept but story must be re-built when user confirms)
+  - `needs-rebuild` → `in-progress` (when user confirms rebuild; `build-tdd` picks it up again)
+  - `done` → `obsolete` (when the feature is removed from the PRD; code is not deleted but story is retired)
+  - `ready` → `obsolete` (when the feature is removed before build starts)
+  - `in-progress` → `obsolete` (when the feature is removed during build)
 - `priority` — drives execution order in `plan-n-build`.
 - `prd` — relative link so agents can pull PRD context without re-deriving it.
 - `depends_on` — `plan-n-build` honors this when ordering execution.
