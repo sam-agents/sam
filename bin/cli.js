@@ -3,6 +3,9 @@
 const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
+const { execSync } = require('child_process');
+
+const EXAMPLE_REPO = 'https://github.com/sam-agents/example-todo.git';
 
 const CYAN = '\x1b[36m';
 const GREEN = '\x1b[32m';
@@ -92,22 +95,99 @@ function countFiles(dir) {
   return count;
 }
 
+function isGitAvailable() {
+  try {
+    execSync('git --version', { stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function isDirEmpty(dir) {
+  if (!fs.existsSync(dir)) return true;
+  return fs.readdirSync(dir).length === 0;
+}
+
+function runDemo(targetDir, force) {
+  log('\n' + BOLD + '  SAM Demo' + RESET);
+  log('  Scaffolding sam-agents/example-todo — a working todo app SAM built', CYAN);
+  log('  from a markdown PRD in 14 minutes.\n', CYAN);
+
+  const abs = path.resolve(targetDir);
+
+  if (fs.existsSync(abs) && !isDirEmpty(abs)) {
+    if (!force) {
+      log(`  Target directory exists and is not empty: ${abs}`, RED);
+      log('  Use --force to overwrite, or choose another directory.\n', YELLOW);
+      process.exit(1);
+    }
+    log(`  Overwriting existing directory: ${abs}`, YELLOW);
+    fs.rmSync(abs, { recursive: true, force: true });
+  }
+
+  if (!isGitAvailable()) {
+    log('  Error: git is required to scaffold the demo but was not found on PATH.', RED);
+    log('  Install git from https://git-scm.com/downloads, or clone manually:', YELLOW);
+    log(`    git clone ${EXAMPLE_REPO} ${targetDir}\n`);
+    process.exit(1);
+  }
+
+  log(`  Cloning ${EXAMPLE_REPO}`, DIM);
+  log(`  Into:    ${abs}\n`, DIM);
+
+  try {
+    execSync(`git clone --depth 1 ${EXAMPLE_REPO} "${abs}"`, { stdio: 'inherit' });
+  } catch {
+    log('\n  Clone failed. Check your network or git installation.', RED);
+    process.exit(1);
+  }
+
+  fs.rmSync(path.join(abs, '.git'), { recursive: true, force: true });
+
+  log('\n' + BOLD + '  Demo ready!' + RESET + '\n');
+  log('  What you got:', CYAN);
+  log(`    ${targetDir}/prd.md                       The input (only file a human wrote)`);
+  log(`    ${targetDir}/sdocs/contracts/             Typed seams designed before stories`);
+  log(`    ${targetDir}/sdocs/stories/               6 stories (5 features + 1 integration)`);
+  log(`    ${targetDir}/sdocs/evidence/EPIC-001/     Lens evidence (video, screenshots, network, console)`);
+  log(`    ${targetDir}/client/, server/, tests/     Working source + tests\n`);
+  log('  Run it:', CYAN);
+  log(`    cd ${targetDir}`);
+  log('    npm install');
+  log('    npm run dev                              # http://localhost:5174\n');
+  log('  See it work without running anything:', CYAN);
+  log(`    ${targetDir}/sdocs/evidence/EPIC-001/report/index.html   (Playwright trace viewer)`);
+  log(`    ${targetDir}/sdocs/evidence/EPIC-001/network.json        (every HTTP call captured)\n`);
+  log('  Build your own next:', CYAN);
+  log('    cd <new-project>');
+  log('    npx sam-agents               # install SAM agents for your platform');
+  log('    # then invoke /sam:core:workflows:plan-n-build on a PRD\n');
+}
+
 function showHelp() {
   log('\n' + BOLD + '  SAM - Smart Agent Manager' + RESET);
   log('  Autonomous TDD Agent System\n', CYAN);
-  log('  Usage: npx sam-agents [options] [target-directory]\n');
+  log('  Usage: npx sam-agents [command] [options] [target-directory]\n');
+  log('  Commands:');
+  log('    (default)          Install SAM agents into a project');
+  log('    demo               Scaffold sam-agents/example-todo — a working todo app');
+  log('                       SAM built from a PRD in 14 minutes. No LLM required.\n');
   log('  Options:');
   log('    --platform <name>  Target platform: claude, cursor, antigravity, gemini, copilot, all');
+  log('    --force            Overwrite an existing non-empty target directory (for demo)');
   log('    --help, -h         Show this help message');
   log('    --version, -v      Show version number\n');
   log('  Examples:');
-  log('    npx sam-agents                         Interactive mode');
+  log('    npx sam-agents                         Interactive install');
   log('    npx sam-agents --platform cursor       Install for Cursor');
   log('    npx sam-agents --platform antigravity  Install for Antigravity');
   log('    npx sam-agents --platform gemini       Install for Gemini CLI');
   log('    npx sam-agents --platform copilot      Install for GitHub Copilot');
   log('    npx sam-agents --platform all          Install for all platforms');
-  log('    npx sam-agents ./myapp                 Install in ./myapp directory\n');
+  log('    npx sam-agents ./myapp                 Install in ./myapp directory');
+  log('    npx sam-agents demo                    Scaffold example-todo in ./sam-demo');
+  log('    npx sam-agents demo ./my-demo          Scaffold into ./my-demo\n');
   log('  Supported Platforms:');
   log('    claude      - Claude Code CLI (.claude/commands/)');
   log('    cursor      - Cursor IDE (.cursor/rules/)');
@@ -940,6 +1020,14 @@ async function main() {
   if (args.includes('--version') || args.includes('-v')) {
     const pkg = require('../package.json');
     log(`sam-agents v${pkg.version}`);
+    return;
+  }
+
+  // Demo subcommand
+  if (args[0] === 'demo') {
+    const force = args.includes('--force');
+    const targetDir = args.slice(1).find(a => !a.startsWith('--')) || './sam-demo';
+    runDemo(targetDir, force);
     return;
   }
 

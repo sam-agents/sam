@@ -32,6 +32,16 @@ After the per-epic integration story passes, **Lens** drives a real headless Chr
 
 ## Quick Start
 
+### Try the demo first (no LLM required)
+
+```bash
+npx sam-agents demo
+```
+
+Scaffolds [`sam-agents/example-todo`](https://github.com/sam-agents/example-todo) into `./sam-demo` — a working todo app SAM built from a PRD, with every artifact (contracts, stories, source, tests, Lens evidence) on disk. Browse the files, run `npm install && npm run dev`, open `sdocs/evidence/EPIC-001/report/index.html` for the Playwright trace. The fastest way to see what SAM actually produces.
+
+### Install SAM into your project
+
 ```bash
 # Interactive mode (choose your platform)
 npx sam-agents
