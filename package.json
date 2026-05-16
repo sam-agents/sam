@@ -38,11 +38,12 @@
     "node": ">=16.0.0"
   },
   "scripts": {
-    "test": "node scripts/verify-manifest.js && node scripts/verify-sync.js && node scripts/verify-gemini.js && node scripts/verify-copilot.js",
+    "test": "node scripts/verify-manifest.js && node scripts/verify-sync.js && node scripts/verify-gemini.js && node scripts/verify-copilot.js && node scripts/verify-story-schema.js",
     "verify:sync": "node scripts/verify-sync.js",
     "verify:manifest": "node scripts/verify-manifest.js",
     "verify:gemini": "node scripts/verify-gemini.js",
     "verify:copilot": "node scripts/verify-copilot.js",
+    "verify:story-schema": "node scripts/verify-story-schema.js",
     "sync-templates": "node scripts/sync-templates.js"
   }
 }

@@ -47,6 +47,13 @@ created: 2026-05-14                     # YYYY-MM-DD
   - `draft` — Atlas designed it, no story has implemented it yet
   - `stable` — implemented and exercised by at least one story
   - `deprecated` — superseded; consumers must migrate
+- **Replan lifecycle for `status`** — when `sam-replan` processes a revised PRD:
+  - *Feature removed* → the contract is set to `deprecated`. The contract file is **not** deleted; code that implements it remains in place until the user explicitly removes it.
+  - *Feature modified, story already done* → the contract `version` is bumped and the owning story is marked `needs-rebuild`. The contract stays `stable` (the new version is the current truth).
+  - *Feature modified, story not yet built* → the contract is updated in place; `status` remains `draft` or `stable` as-is.
+  - *Feature added* → new contracts are created at `draft`, same as the `extend` workflow.
+  - A `deprecated` contract must not be referenced by any new story's `consumes:` list. Existing stories that consume it are flagged in the impact summary for the user to address.
+  - Deprecation is permanent within a plan cycle — there is no "un-deprecate". If the feature returns, a new contract with a new id is created.
 - `owner_story` — the story whose `produces:` list contains this contract. Exactly one. `null` only for contracts that pre-exist the planning run (legacy code).
 - `version` — pinned in story `consumes:` entries via `id@version` when a breaking change is needed; otherwise consumers always read latest.
 

@@ -53,6 +53,12 @@ const WORKFLOWS = [
     file: 'core/workflows/extend/workflow.md',
     display: 'SAM Extend Workflow',
     description: 'Plan additive changes on top of an existing app. Reads existing sdocs/, never wipes; emits new contracts, stories, and regression integration without modifying done work.'
+  },
+  {
+    name: 'replan',
+    file: 'core/workflows/replan/workflow.md',
+    display: 'SAM Replan Workflow',
+    description: 'Handle requirement changes mid-build. Diffs a revised PRD against the current one, computes impact on contracts and stories, and applies per-category actions (added/modified/removed) with user confirmation.'
   }
 ];
 
@@ -738,7 +744,7 @@ All SAM integration files are located in: copilot-integration/
 
   // Add one workflow file per SAM workflow
   instructionsContent += `## SAM Workflows
-Five workflows compose the SAM experience (quick-prd, scope, plan, build-tdd, plan-n-build). Each is a self-contained playbook the user can invoke.
+Seven workflows compose the SAM experience (quick-prd, scope, plan, build-tdd, plan-n-build, extend, replan). Each is a self-contained playbook the user can invoke.
 
 `;
 
@@ -895,7 +901,8 @@ function install(platform, targetDir) {
     log('    /sam:core:workflows:plan           - PRD -> epics + stories');
     log('    /sam:core:workflows:build-tdd      - One story -> tested code');
     log('    /sam:core:workflows:plan-n-build   - Full pipeline (plan + tdd + docs)');
-    log('    /sam:core:workflows:extend         - Plan additive changes on top of existing app\n');
+    log('    /sam:core:workflows:extend         - Plan additive changes on top of existing app');
+    log('    /sam:core:workflows:replan         - Handle requirement changes mid-build\n');
   }
 
   if (platform === 'cursor' || platform === 'all') {
@@ -918,7 +925,8 @@ function install(platform, targetDir) {
     log('    @sam-plan          - PRD -> epics + stories');
     log('    @sam-build-tdd     - One story -> tested code');
     log('    @sam-plan-n-build  - Full pipeline (plan + tdd + docs)');
-    log('    @sam-extend        - Plan additive changes on top of existing app\n');
+    log('    @sam-extend        - Plan additive changes on top of existing app');
+    log('    @sam-replan        - Handle requirement changes mid-build\n');
   }
 
   if (platform === 'antigravity' || platform === 'all') {
@@ -941,7 +949,8 @@ function install(platform, targetDir) {
     log('    /sam-plan           - PRD -> epics + stories');
     log('    /sam-build-tdd      - One story -> tested code');
     log('    /sam-plan-n-build   - Full pipeline (plan + tdd + docs)');
-    log('    /sam-extend         - Plan additive changes on top of existing app\n');
+    log('    /sam-extend         - Plan additive changes on top of existing app');
+    log('    /sam-replan         - Handle requirement changes mid-build\n');
   }
 
   if (platform === 'gemini' || platform === 'all') {
@@ -964,7 +973,8 @@ function install(platform, targetDir) {
     log('    sam-plan           - PRD -> epics + stories');
     log('    sam-build-tdd      - One story -> tested code');
     log('    sam-plan-n-build   - Full pipeline (plan + tdd + docs)');
-    log('    sam-extend         - Plan additive changes on top of existing app\n');
+    log('    sam-extend         - Plan additive changes on top of existing app');
+    log('    sam-replan         - Handle requirement changes mid-build\n');
   }
 
   if (platform === 'copilot' || platform === 'all') {
@@ -987,7 +997,8 @@ function install(platform, targetDir) {
     log('    "Run sam-plan"            - PRD -> epics + stories');
     log('    "Run sam-build-tdd"       - One story -> tested code');
     log('    "Run sam-plan-n-build"    - Full pipeline (plan + tdd + docs)');
-    log('    "Run sam-extend"          - Plan additive changes on top of existing app\n');
+    log('    "Run sam-extend"          - Plan additive changes on top of existing app');
+    log('    "Run sam-replan"          - Handle requirement changes mid-build\n');
   }
 
   if (platform === 'claude' || platform === 'all') {
