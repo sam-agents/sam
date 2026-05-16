@@ -8,6 +8,10 @@
 
 SAM orchestrates a team of specialized AI agents that transform an idea or PRD into working, tested code using strict Test-Driven Development (RED-GREEN-REFACTOR). Don't have a PRD yet? Start with `quick-prd` (one-pass draft) or `scope` (full discovery) — SAM will help you draft one.
 
+### See it work — [`sam-agents/example-todo`](https://github.com/sam-agents/example-todo)
+
+A working todo app built by SAM in **14 minutes** from a single markdown PRD. Every artifact is committed: PRD, contracts, stories, source, tests, and the post-integration screenshots + network log + video that Lens captured. Browse it in 90 seconds to see exactly what SAM produces.
+
 ## Quick Start
 
 ```bash
