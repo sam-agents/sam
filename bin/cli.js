@@ -53,6 +53,12 @@ const WORKFLOWS = [
     file: 'core/workflows/extend/workflow.md',
     display: 'SAM Extend Workflow',
     description: 'Plan additive changes on top of an existing app. Reads existing sdocs/, never wipes; emits new contracts, stories, and regression integration without modifying done work.'
+  },
+  {
+    name: 'replan',
+    file: 'core/workflows/replan/workflow.md',
+    display: 'SAM Replan Workflow',
+    description: 'Handle requirement changes mid-build. Diffs a revised PRD against the current one, computes impact on contracts and stories, and applies per-category actions (added/modified/removed) with user confirmation.'
   }
 ];
 

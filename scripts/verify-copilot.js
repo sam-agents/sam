@@ -69,7 +69,8 @@ function verifyCopilotInstall() {
     { name: 'sam-plan',         display: 'SAM Planning Workflow' },
     { name: 'sam-build-tdd',    display: 'SAM Build-TDD Workflow' },
     { name: 'sam-plan-n-build', display: 'SAM Plan-n-Build Workflow' },
-    { name: 'sam-extend',       display: 'SAM Extend Workflow' }
+    { name: 'sam-extend',       display: 'SAM Extend Workflow' },
+    { name: 'sam-replan',       display: 'SAM Replan Workflow' }
   ];
 
   const instructions = fs.readFileSync(instructionsPath, 'utf8');

@@ -64,7 +64,8 @@ function verifyGeminiSkills() {
     'sam-plan',
     'sam-build-tdd',
     'sam-plan-n-build',
-    'sam-extend'
+    'sam-extend',
+    'sam-replan'
   ];
 
   for (const skill of expectedAgentSkills) {
